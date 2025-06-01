@@ -1,32 +1,101 @@
 <template>
-	<div class="pdf-container">
-		<h1 class="title">Reporte de Reclamos - Corte de fibra</h1>
+	<div>
+		<v-row>
+			<v-col cols="4">
+				<v-card>
+					<v-card-title>Datos de formulario</v-card-title>
+					<v-card-text>
+						<ul>
+							<li>
+								<span>Pronombre:</span>
+								<v-chip>{{ formData.pronombre }}</v-chip>
+							</li>
+							<li>
+								<span>Nombre:</span> <v-chip>{{ formData.nombre }}</v-chip>
+							</li>
+							<li>
+								<span>CUISMP:</span> <v-chip>{{ formData.cuismp }}</v-chip>
+							</li>
+							<li>
+								<span>Fecha Inicio:</span>
+								<v-chip>{{ formData.fechaInicio }}</v-chip>
+							</li>
+							<li>
+								<span>Hora Inicio:</span>
+								<v-chip>{{ formData.horaInicio }}</v-chip>
+							</li>
+							<li>
+								<span>Fecha Fin:</span> <v-chip>{{ formData.fechaFin }}</v-chip>
+							</li>
+							<li>
+								<span>Hora Fin:</span> <v-chip>{{ formData.horaFin }}</v-chip>
+							</li>
+							<li>
+								<span>Desplazamiento:</span>
+								<v-chip>{{ formData.desplazamiento }}</v-chip>
+							</li>
+							<li>
+								<span>Comunicacion Cliente:</span>
+								<v-chip>{{ formData.comunicacionCliente }}</v-chip>
+							</li>
+						</ul>
+					</v-card-text>
+				</v-card>
+			</v-col>
+			<v-col cols="8">
+				<div class="pdf-container">
+					<p><strong>RESPONSABILIDAD: </strong>CLIENTE</p>
+					<p>
+						<strong>TIPIFICACION: </strong>FALLA DE ENERGIA (CLIENTE) - SERVICIO
+						RESTABLECIDO POR POWER ON
+					</p>
+					<p><strong>DETERMINACIÓN DE CAUSA:</strong></p>
+					<P>
+						El inconveniente se originó por un evento de energía en la sede del
+						cliente, afectando los equipos de comunicaciones.
+					</P>
+					<P><strong>MEDIDAS CORRECTIVAS Y/O PREVENTIVAS TOMADAS</strong></P>
+					<p>
+						El cliente, {{ formData.pronombre }} {{ formData.nombre }}, reportó
+						inconvenientes con el servicio de datos identificado con el CUISMP
+						{{ formData.cuismp }}, se genero el ticket el día
+						{{ fechaInicioFormateada }} a las
+						{{ formData.horaInicio }}
+						horas. Inmediatamente, Claro revisó el enlace encontrando pérdida de
+						conectividad con los equipos ubicados en la sede del cliente. Ante
+						ello,
+						<span v-if="formData.desplazamiento == 'si'">
+							se gestionó el desplazamiento de personal técnico especializado
+							hacia la sede del cliente.
+						</span>
+						<span v-if="formData.comunicacionCliente == 'no'">
+							en comunicación con el cliente se validó un evento de energía en
+							la sede del cliente
+						</span>
+						<span v-if="formData.comunicacionCliente == 'si'">
+							tratamos de comunicarnos con el cliente, para que nos informe si
+							se encontraba realizando algún trabajo o si presentó algún evento
+							de energía en su sede</span
+						>. Posteriormente, se verificó el restablecimiento del servicio por
+						encendido de equipos sin la intervención del personal de Claro.
+						Finalmente, se comprobó el correcto funcionamiento y estabilidad del
+						servicio el {{ fechaFinFormateada }} a las
+						{{ formData.horaFin }} horas.
+					</p>
 
-		<p>
-			A traves de los gestores de monitoreo de Claro, se detectó la interrupción
-			total del servicio de datos del cliente identificado con el CUISMP
-			{{ formData.cuismp }} y se genero el ticket, el día {{ fechaInicioFormateada }} a las {{ formData.horaInicio }}
-			horas. Por motivos ajenos a nuestro control, causado por la interrupción
-			en el suministro eléctrico (Corte de energía comercial no programado) en
-			la zona donde se ubica nuestro punto de presencia, afectó a dicho punto de
-			presencia del cual se aprovisiona los servicios del cliente. CLARO actuó
-			diligentemente puesto que el respaldo eléctrico operó normalmente, sin
-			embargo, más adelante se presentó un problema con la contingencia
-			eléctrica, lo que a su vez produjo la afectación en los servicios del
-			cliente. En vista de ello, CLARO tomó las acciones correctivas
-			<span v-if="formData.desplazamiento == 'si'">
-				, desplazando personal especializado para realizar los correctivos del
-				caso
-			</span>
-			, restableciendo el fluido eléctrico en el punto de presencia a través del
-			sistema de contingencia eléctrico y verificando el restablecimiento del
-			servicio el día {{ fechaFinFormateada }} a las {{ formData.horaFin }} horas.
-		</p>
+					<p>
+						<strong>Fecha y hora inicio:</strong> {{ fechaInicioFormateada }}
+						{{ formData.horaInicio }}
+					</p>
+					<p>
+						<strong>Fecha y hora fin:</strong> {{ fechaFinFormateada }}
+						{{ formData.horaFin }}
+					</p>
 
-		<p><strong>Fecha y hora inicio:</strong> {{ fechaInicioFormateada }} {{ formData.horaInicio }}</p>
-		<p><strong>Fecha y hora fin:</strong> {{ fechaFinFormateada }} {{ formData.horaFin }}</p>
-
-		<v-divider class="my-4"></v-divider>
+					<v-divider class="my-4"></v-divider>
+				</div>
+			</v-col>
+		</v-row>
 	</div>
 </template>
 
