@@ -115,6 +115,9 @@
 					:fechaFin.sync="fechaFin"
 					:horaFin.sync="horaFin"
 					:desplazamiento.sync="desplazamiento"
+					:pronombre.sync="pronombre"
+					:nombre.sync="nombre"
+					:comunicacionCliente.sync="comunicacionCliente"
 				/>
 				<v-btn
 					color="primary"
@@ -148,6 +151,9 @@
 								fechaFin: fechaFin,
 								horaFin: horaFin,
 								desplazamiento: desplazamiento,
+								pronombre: pronombre,
+								nombre: nombre,
+								comunicacionCliente: comunicacionCliente,
 							}"
 						/>
 
@@ -187,6 +193,9 @@
 				fechaFin: null,
 				horaFin: null,
 				desplazamiento: null,
+				pronombre: null,
+				nombre: null,
+				comunicacionCliente: null,
 				tipos: [
 					{
 						label:
@@ -271,6 +280,18 @@
 				}
 				if (this.desplazamiento === null || this.desplazamiento === "") {
 					alert("Por favor selecciona una opción de Desplazamiento.");
+					return;
+				}
+				if (this.pronombre === null || this.pronombre === "") {
+					alert("Por favor selecciona un pronombre.");
+					return;
+				}
+				if (this.nombre === null || this.nombre === "") {
+					alert("Por favor completa el campo Nombre.");
+					return;
+				}
+				if (this.comunicacionCliente === null || this.comunicacionCliente === "") {
+					alert("Por favor selecciona una opción de Comunicación con el cliente.");
 					return;
 				}
 
