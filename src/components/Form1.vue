@@ -28,7 +28,7 @@
 						label="CUISMP"
 						outlined
 						:value="cuismp"
-						@change="validateCuismp($event)"
+						@input="$emit('update:cuismp', $event)"
 						maxlength="5"
 					></v-text-field>
 				</v-col>
@@ -185,15 +185,6 @@
 			},
 		},
 		methods: {
-			validateCuismp(event) {
-				const regex = /^[0-9]*$/;
-				if (!regex.test(event.target.value)) {
-					event.target.value = event.target.value.slice(0, -1);
-					this.$emit('update:cuismp', event.target.value);
-				} else {
-					this.$emit('update:cuismp', event.target.value);
-				}
-			}
 		}
 	};
 </script>
