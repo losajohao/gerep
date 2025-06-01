@@ -297,6 +297,20 @@
 
 				this.e1 = 3;
 			},
+			irAPaso1() {
+				this.e1 = 1;
+				this.tipo = null;
+				this.ticket = null;
+				this.cuismp = null;
+				this.fechaInicio = null;
+				this.horaInicio = null;
+				this.fechaFin = null;
+				this.horaFin = null;
+				this.desplazamiento = null;
+				this.pronombre = null;
+				this.nombre = null;
+				this.comunicacionCliente = null;
+			},
 		},
 	};
 </script>

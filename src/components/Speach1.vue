@@ -11,7 +11,7 @@
 								<v-chip>{{ formData.pronombre }}</v-chip>
 							</li>
 							<li>
-								<span>Nombre:</span> <v-chip>{{ formData.nombre }}</v-chip>
+								<span>Nombre:</span> <v-chip>{{ nombreFormateado }}</v-chip>
 							</li>
 							<li>
 								<span>CUISMP:</span> <v-chip>{{ formData.cuismp }}</v-chip>
@@ -56,7 +56,7 @@
 					</P>
 					<P><strong>MEDIDAS CORRECTIVAS Y/O PREVENTIVAS TOMADAS</strong></P>
 					<p>
-						El cliente, {{ formData.pronombre }} {{ formData.nombre }}, reportó
+						El cliente, {{ formData.pronombre }} {{ nombreFormateado }}, reportó
 						inconvenientes con el servicio de datos identificado con el CUISMP
 						{{ formData.cuismp }}, se genero el ticket el día
 						{{ fechaInicioFormateada }} a las
@@ -124,6 +124,17 @@
 				const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
 				const año = fecha.getFullYear().toString();
 				return `${dia}/${mes}/${año}`;
+			},
+			nombreFormateado() {
+				if (!this.formData.nombre) return "";
+				console.log("nombreFormateado:", this.formData.nombre
+					.split(" ")
+					.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+					.join(" "));
+				return this.formData.nombre
+					.split(" ")
+					.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+					.join(" ");
 			},
 		},
 	};
