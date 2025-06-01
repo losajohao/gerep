@@ -258,7 +258,7 @@
 			},
 			irAPaso3() {
 				if (this.cuismp === null || this.cuismp === "") {
-					alert("Por favor ingrese solo números en el campo CUISMP.");
+					alert("Por favor ingrese el campo CUISMP.");
 					return;
 				}
 				if (this.fechaInicio === null || this.fechaInicio === "") {
