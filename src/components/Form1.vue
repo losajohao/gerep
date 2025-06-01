@@ -11,6 +11,7 @@
 						label="Pronombres"
 						outlined
 						v-model="pronombreLocal"
+						:disabled="ticket == '2'"
 					/>
 				</v-col>
 				<v-col cols="8">
@@ -19,6 +20,7 @@
 						outlined
 						:value="nombre"
 						@input="$emit('update:nombre', $event)"
+						:disabled="ticket == '2'"
 					></v-text-field>
 				</v-col>
 				<v-col cols="2">
@@ -26,7 +28,7 @@
 						label="CUISMP"
 						outlined
 						:value="cuismp"
-						@input="$emit('update:cuismp', $event)"
+						@change="validateCuismp($event)"
 						maxlength="5"
 					></v-text-field>
 				</v-col>
@@ -143,6 +145,10 @@
 				type: String,
 				default: null,
 			},
+			ticket: {
+				type: String,
+				default: null,
+			},
 		},
 		computed: {
 			pronombreLocal: {
@@ -178,5 +184,16 @@
 				},
 			},
 		},
+		methods: {
+			validateCuismp(event) {
+				const regex = /^[0-9]*$/;
+				if (!regex.test(event.target.value)) {
+					event.target.value = event.target.value.slice(0, -1);
+					this.$emit('update:cuismp', event.target.value);
+				} else {
+					this.$emit('update:cuismp', event.target.value);
+				}
+			}
+		}
 	};
 </script>

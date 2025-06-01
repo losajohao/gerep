@@ -5,40 +5,64 @@
 				<v-card>
 					<v-card-title>Datos de formulario</v-card-title>
 					<v-card-text>
-						<ul>
-							<li>
-								<span>Pronombre:</span>
-								<v-chip>{{ formData.pronombre }}</v-chip>
-							</li>
-							<li>
-								<span>Nombre:</span> <v-chip>{{ nombreFormateado }}</v-chip>
-							</li>
-							<li>
-								<span>CUISMP:</span> <v-chip>{{ formData.cuismp }}</v-chip>
-							</li>
-							<li>
-								<span>Fecha Inicio:</span>
-								<v-chip>{{ formData.fechaInicio }}</v-chip>
-							</li>
-							<li>
-								<span>Hora Inicio:</span>
-								<v-chip>{{ formData.horaInicio }}</v-chip>
-							</li>
-							<li>
-								<span>Fecha Fin:</span> <v-chip>{{ formData.fechaFin }}</v-chip>
-							</li>
-							<li>
-								<span>Hora Fin:</span> <v-chip>{{ formData.horaFin }}</v-chip>
-							</li>
-							<li>
-								<span>Desplazamiento:</span>
-								<v-chip>{{ formData.desplazamiento }}</v-chip>
-							</li>
-							<li>
-								<span>Comunicacion Cliente:</span>
-								<v-chip>{{ formData.comunicacionCliente }}</v-chip>
-							</li>
-						</ul>
+						<v-simple-table>
+							<tbody>
+								<tr>
+									<td>Pronombre</td>
+									<td>
+										<v-chip>{{ formData.pronombre }}</v-chip>
+									</td>
+								</tr>
+								<tr>
+									<td>Nombre</td>
+									<td>
+										<v-chip>{{ nombreFormateado }}</v-chip>
+									</td>
+								</tr>
+								<tr>
+									<td>CUISMP</td>
+									<td>
+										<v-chip>{{ formData.cuismp }}</v-chip>
+									</td>
+								</tr>
+								<tr>
+									<td>Fecha Inicio</td>
+									<td>
+										<v-chip>{{ formData.fechaInicio }}</v-chip>
+									</td>
+								</tr>
+								<tr>
+									<td>Hora Inicio</td>
+									<td>
+										<v-chip>{{ formData.horaInicio }}</v-chip>
+									</td>
+								</tr>
+								<tr>
+									<td>Fecha Fin</td>
+									<td>
+										<v-chip>{{ formData.fechaFin }}</v-chip>
+									</td>
+								</tr>
+								<tr>
+									<td>Hora Fin</td>
+									<td>
+										<v-chip>{{ formData.horaFin }}</v-chip>
+									</td>
+								</tr>
+								<tr>
+									<td>Desplazamiento</td>
+									<td>
+										<v-chip>{{ formData.desplazamiento }}</v-chip>
+									</td>
+								</tr>
+								<tr>
+									<td>Comunicacion Cliente</td>
+									<td>
+										<v-chip>{{ formData.comunicacionCliente }}</v-chip>
+									</td>
+								</tr>
+							</tbody>
+						</v-simple-table>
 					</v-card-text>
 				</v-card>
 			</v-col>

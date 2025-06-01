@@ -92,7 +92,7 @@
 													<v-radio
 														:label="tipoItem.label"
 														:value="tipoItem.value"
-														v-for="tipoItem in tipos"
+														v-for="tipoItem in tiposFiltrados"
 														:key="tipoItem.value"
 													></v-radio>
 												</v-radio-group>
@@ -118,6 +118,7 @@
 					:pronombre.sync="pronombre"
 					:nombre.sync="nombre"
 					:comunicacionCliente.sync="comunicacionCliente"
+					:ticket="ticket"
 				/>
 				<v-btn
 					color="primary"
@@ -138,6 +139,11 @@
 						dark
 					>
 						<v-toolbar-title>Visualización del Documento</v-toolbar-title>
+						<v-spacer></v-spacer>
+						<v-btn light
+							@click="irAPaso1"
+							>Volver al Paso 1</v-btn
+						>
 					</v-toolbar>
 
 					<v-card-text>
@@ -162,13 +168,6 @@
 						</div>
 					</v-card-text>
 				</v-card>
-
-				<v-btn
-					color="primary"
-					@click="e1 = 1"
-					>Volver al Paso 1</v-btn
-				>
-				<v-btn text>Cancelar</v-btn>
 			</v-stepper-content>
 		</v-stepper-items>
 	</v-stepper>
@@ -201,44 +200,51 @@
 						label:
 							"FALLA DE ENERGIA (CLIENTE) - SERVICIO RESTABLECIDO POR POWER ON",
 						value: "1",
+						estado: true
 					},
 					{
 						label:
 							"FALLA DE ENERGIA (CLIENTE) - FALLA EN SISTEMA ELECTRICO DE CLIENTE",
 						value: "2",
+						estado: false
 					},
 					{
 						label: "PROBLEMA DE ENERGIA COMERCIAL EN SITE/POP TIPO A",
 						value: "3",
+						estado: false
 					},
 					{
 						label: "CORTE DE FIBRA OPTICA TRONCAL DE RED - CASO FORTUITO",
 						value: "4",
+						estado: false
 					},
-					{ label: "PROBLEMA LAN DEL CLIENTE", value: "5" },
-					{ label: "ANEXO DESCONFIGURADO", value: "6" },
+					{ label: "PROBLEMA LAN DEL CLIENTE", value: "5", estado: false },
+					{ label: "ANEXO DESCONFIGURADO", value: "6", estado: false },
 					{
 						label:
 							"CLIENTE: CAÍDA DE SERVICIO-MANIPULACIÓN DE EQUIPOS/CABLEADO",
 						value: "7",
+						estado: false
 					},
 					{
 						label:
 							"CORTE DE FIBRA OPTICA / COBRE DE ULTIMA MILLA - CASO FORTUITO",
 						value: "8",
+						estado: false
 					},
-					{ label: "SATURAMIENTO ANCHO DE BANDA ALQUILADO", value: "9" },
-					{ label: "TELEFONO / ANEXO AVERIADO", value: "10" },
-					{ label: "JUMPER DE FIBRA AVERIADO", value: "11" },
+					{ label: "SATURAMIENTO ANCHO DE BANDA ALQUILADO", value: "9", estado: false },
+					{ label: "TELEFONO / ANEXO AVERIADO", value: "10", estado: false },
+					{ label: "JUMPER DE FIBRA AVERIADO", value: "11", estado: false },
 				],
 			};
 		},
 		computed: {
+			tiposFiltrados() {
+				return this.tipos.filter(tipo => tipo.estado);
+			},
 			componenteSeleccionado() {
 				if (this.ticket === "1" && this.tipo === "1") return "Speach1";
-				if (this.ticket === "1" && this.tipo === "2") return "Speach2";
-				if (this.ticket === "2" && this.tipo === "1") return "Speach3";
-				if (this.ticket === "2" && this.tipo === "2") return "Speach3";
+				if (this.ticket === "2" && this.tipo === "1") return "Speach2";
 				return null;
 			},
 		},
@@ -251,15 +257,8 @@
 				this.e1 = 2;
 			},
 			irAPaso3() {
-				console.log("cuismp:", this.cuismp);
-				console.log("fechaInicio:", this.fechaInicio);
-				console.log("horaInicio:", this.horaInicio);
-				console.log("fechaFin:", this.fechaFin);
-				console.log("horaFin:", this.horaFin);
-				console.log("desplazamiento:", this.desplazamiento);
-
 				if (this.cuismp === null || this.cuismp === "") {
-					alert("Por favor completa el campo CUISMP.");
+					alert("Por favor ingrese solo números en el campo CUISMP.");
 					return;
 				}
 				if (this.fechaInicio === null || this.fechaInicio === "") {
@@ -282,16 +281,21 @@
 					alert("Por favor selecciona una opción de Desplazamiento.");
 					return;
 				}
-				if (this.pronombre === null || this.pronombre === "") {
+				if ( this.ticket == '1' &&  (this.pronombre === null || this.pronombre === "")) {
 					alert("Por favor selecciona un pronombre.");
 					return;
 				}
-				if (this.nombre === null || this.nombre === "") {
+				if ( this.ticket == '1' && (this.nombre === null || this.nombre === "")) {
 					alert("Por favor completa el campo Nombre.");
 					return;
 				}
-				if (this.comunicacionCliente === null || this.comunicacionCliente === "") {
-					alert("Por favor selecciona una opción de Comunicación con el cliente.");
+				if (
+					this.comunicacionCliente === null ||
+					this.comunicacionCliente === ""
+				) {
+					alert(
+						"Por favor selecciona una opción de Comunicación con el cliente."
+					);
 					return;
 				}
 
