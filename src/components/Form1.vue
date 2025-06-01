@@ -1,11 +1,19 @@
 <template>
   <v-card
     class="mb-12"
-    color="grey lighten-1"
+    color="white lighten-1"
   >
     <v-container>
       <v-row>
-        <v-col cols="12">
+        <v-col cols="10">
+          <v-text-field
+            label="Nombre"
+            outlined
+            :value="nombre"
+            @input="$emit('update:nombre', $event)"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="2">
           <v-text-field
             label="CUISMP"
             outlined
@@ -96,6 +104,10 @@ export default {
       type: String,
       default: null,
     },
+    nombre: {
+      type: String,
+      default: null,
+    },
   },
   computed: {
     desplazamientoLocal: {
@@ -104,6 +116,14 @@ export default {
       },
       set(value) {
         this.$emit('update:desplazamiento', value);
+      }
+    },
+    nombreLocal: {
+      get() {
+        return this.nombre;
+      },
+      set(value) {
+        this.$emit('update:nombre', value);
       }
     }
   }
