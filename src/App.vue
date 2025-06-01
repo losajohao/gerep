@@ -4,37 +4,19 @@
       app
       color="primary"
       dark
+      style="background-color: red;"
     >
       <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
+        <v-icon class="mr-2">mdi-chart-bar</v-icon>
+        <v-toolbar-title>GEREP</v-toolbar-title>
       </div>
 
       <v-spacer></v-spacer>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+      <v-chip color="white" text-color="blue" class="mr-2" >By Luz Karina Lopez Saavedra (alias kakaroto)</v-chip>
+      <v-avatar size="24">
+        <v-icon size="30">mdi-account-circle</v-icon>
+      </v-avatar>
     </v-app-bar>
 
     <v-main>
@@ -44,10 +26,13 @@
 </template>
 
 <script>
+import UserMenu from './components/UserMenu.vue'
 
 export default {
   name: 'App',
-
+  components: {
+    UserMenu,
+  },
   data: () => ({
     //
   }),
