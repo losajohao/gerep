@@ -1,30 +1,51 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import HomeView from '../views/HomeView.vue';
+import { auth } from '../utils/firebase';
+import LoginView from '@/views/LoginView.vue';
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
-  {
+   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    redirect: '/home'
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: function () {
-      return import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-    }
+    path: '/home',
+    name: 'home',
+    component: HomeView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginView
   }
-]
+];
 
 const router = new VueRouter({
   mode: 'history',
   routes
-})
+});
 
-export default router
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const user = auth.currentUser;
+
+  if (requiresAuth && !user) {
+    next('/login');
+  } else if (to.path === '/login' && user) {
+    // Redirige solo si no estamos ya en /home
+    if (from.path !== '/home') {
+      next('/home');
+    } else {
+      next(false); // cancela navegación redundante
+    }
+  } else {
+    next();
+  }
+});
+
+
+export default router;
