@@ -32,10 +32,22 @@
 								justify="space-between"
 							>
 								<h3>Selecciona las opciones:</h3>
+								
+								<!-- Alerta para combinación inválida -->
+								<v-alert
+									v-if="ticket && tipo && !combinacionValida"
+									type="warning"
+									outlined
+									class="mb-4"
+								>
+									⚠️ La combinación seleccionada no está disponible. Por favor, selecciona otra opción.
+								</v-alert>
+								
 								<div>
 									<v-btn
 										color="primary"
 										@click="irAPaso2"
+										:disabled="!combinacionValida"
 										>Continuar</v-btn
 									>
 									<v-btn text>Cancelar</v-btn>
@@ -109,7 +121,11 @@
 							:pronombre.sync="pronombre"
 							:nombre.sync="nombre"
 							:comunicacionCliente.sync="comunicacionCliente"
+							:problemaEncontrado.sync="problemaEncontrado"
+							:otroProblemaEncontrado.sync="otroProblemaEncontrado"
+							:correctivo.sync="correctivo"
 							:ticket="ticket"
+							:tipo="tipo"
 						/>
 						<v-btn
 							color="primary"
@@ -151,6 +167,9 @@
 									pronombre: pronombre,
 									nombre: nombre,
 									comunicacionCliente: comunicacionCliente,
+									problemaEncontrado: problemaEncontrado,
+									otroProblemaEncontrado: otroProblemaEncontrado,
+									correctivo: correctivo,
 								}"
 							/>
 							<div v-else>
@@ -168,10 +187,15 @@
 	import Speach1 from "../components/Speach1.vue";
 	import Speach2 from "../components/Speach2.vue";
 	import Speach3 from "../components/Speach3.vue";
+	import Speach4 from "../components/Speach4.vue";
+	import Speach5 from "../components/Speach5.vue";
+	import Speach6 from "../components/Speach6.vue";
+	import Speach7 from "../components/Speach7.vue";
+	import Speach8 from "../components/Speach8.vue";
 	import Form1 from "../components/Form1.vue";
 
 	export default {
-		components: { Speach1, Speach2, Speach3, Form1 },
+		components: { Speach1, Speach2, Speach3, Speach4, Speach5, Speach6, Speach7, Speach8, Form1 },
 		data() {
 			return {
 				// Ya no necesitamos el composable en data, trabajamos directamente con el store
@@ -284,9 +308,40 @@
 				}
 			},
 			
+			problemaEncontrado: {
+				get() {
+					return this.$store.getters['stepper/formData'].problemaEncontrado;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'problemaEncontrado', value });
+				}
+			},
+			
+			otroProblemaEncontrado: {
+				get() {
+					return this.$store.getters['stepper/formData'].otroProblemaEncontrado;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'otroProblemaEncontrado', value });
+				}
+			},
+			
+			correctivo: {
+				get() {
+					return this.$store.getters['stepper/formData'].correctivo;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'correctivo', value });
+				}
+			},
+			
 			// Computed del store
 			tiposFiltrados() {
-				return this.$store.getters['stepper/tiposFiltrados'];
+				return this.$store.getters['stepper/tiposValidos'];
+			},
+			
+			combinacionValida() {
+				return this.$store.getters['stepper/combinacionValida'];
 			},
 			
 			componenteSeleccionado() {
@@ -300,11 +355,6 @@
 		
 		methods: {
 			irAPaso2() {
-				// Usar directamente el dispatch del store para simplificar
-				console.log('Intentando ir al paso 2...');
-				console.log('Datos actuales:', this.$store.getters['stepper/formData']);
-				console.log('¿Es válido el paso 1?:', this.$store.getters['stepper/isStep1Valid']);
-				
 				this.$store.dispatch('stepper/goToStep', 2).catch(error => {
 					console.error('Error al ir al paso 2:', error);
 					alert(error.message);

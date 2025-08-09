@@ -4,12 +4,12 @@
 			<v-col cols="4">
 				<FormDataPanel 
 					:formData="formData" 
-					:showPersonalFields="false"
+					:showPersonalFields="true"
 				/>
 			</v-col>
 			<v-col cols="8">
 				<div class="pdf-container">
-					<p><strong>TIPO DE INC: </strong>PROACTIVO</p>
+					<p><strong>TIPO DE INC: </strong>RECLAMO</p>
 					<p>
 						<strong>TIPIFICACIÓN: </strong>PROBLEMA DE ENERGIA COMERCIAL EN SITE/POP TIPO A
 					</p>
@@ -22,21 +22,21 @@
 					</p>
 					<p><strong>MEDIDAS CORRECTIVAS Y/O PREVENTIVAS TOMADAS</strong></p>
 					<p>
-						A través de los Sistemas de Monitoreo de Claro, de manera proactiva se identificó 
-						la pérdida de gestión del servicio de datos identificado con el CUISMP 
-						{{ formData.cuismp }}, y se generó un ticket el día {{ fechaInicioFormateada }} 
-						a las {{ formData.horaInicio }} horas. Inmediatamente, Claro procedió con la 
-						revisión del enlace, encontrando un inconveniente originado por motivos ajenos 
-						a nuestro control, debido a una interrupción en el suministro eléctrico (corte 
-						de energía comercial no programado) en la zona donde se ubica nuestro punto de 
-						presencia, el cual aprovisiona los servicios del cliente. Claro actuó diligentemente, 
-						ya que el respaldo eléctrico funcionó de manera adecuada; sin embargo, se presentó 
-						una falla en el sistema de contingencia eléctrica, lo que generó la afectación en 
-						los servicios del cliente. Ante ello, se tomaron acciones correctivas inmediatas, 
+						El cliente, {{ formData.pronombre }} {{ nombreFormateado }}, reportó problemas 
+						con su servicio de datos identificado con el CUISMP {{ formData.cuismp }}, 
+						generándose un ticket el día {{ fechaInicioFormateada }} a las 
+						{{ formData.horaInicio }} horas. Inmediatamente, Claro procedió con la revisión 
+						del enlace, encontrando un inconveniente originado por motivos ajenos a nuestro 
+						control, debido a una interrupción en el suministro eléctrico (corte de energía 
+						comercial no programado) en la zona donde se ubica nuestro punto de presencia, 
+						el cual aprovisiona los servicios del cliente. Claro actuó diligentemente, ya 
+						que el respaldo eléctrico funcionó de manera adecuada; sin embargo, se presentó 
+						una falla en el sistema de contingencia eléctrica, lo que generó la afectación 
+						en los servicios del cliente. Ante ello, se tomaron acciones correctivas inmediatas, 
 						desplazando personal técnico especializado para atender la incidencia, logrando 
-						restablecer el fluido eléctrico en el punto de presencia. Finalmente, luego de 
-						los correctivos, se verificó la operatividad y estabilidad del servicio el día 
-						{{ fechaFinFormateada }} a las {{ formData.horaFin }} horas.
+						restablecer el fluido eléctrico en el punto de presencia. Finalmente, se verificó 
+						la operatividad y estabilidad del servicio el día {{ fechaFinFormateada }} a las 
+						{{ formData.horaFin }} horas.
 					</p>
 
 					<p>
@@ -52,12 +52,12 @@
 		</v-row>
 	</div>
 </template>
-  
+
 <script>
 import FormDataPanel from './FormDataPanel.vue';
 
 export default {
-	name: 'Speach3',
+	name: 'Speach4',
 	components: {
 		FormDataPanel
 	},
@@ -83,34 +83,40 @@ export default {
 			const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
 			const año = fecha.getFullYear().toString();
 			return `${dia}/${mes}/${año}`;
+		},
+		nombreFormateado() {
+			if (!this.formData.nombre) return "";
+			return this.formData.nombre
+				.split(" ")
+				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+				.join(" ");
 		}
 	}
 }
 </script>
-  
-  <style scoped>
-  .pdf-container {
-    width: 210mm; /* ancho A4 */
-    background: white;
-    padding: 20mm;
-    margin: 0 auto;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    font-family: 'Roboto', sans-serif;
-    color: #333;
-    line-height: 1.6;
-  }
-  
-  .title {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  h2 {
-    margin-top: 20px;
-    font-size: 18px;
-    color: #444;
-  }
-  </style>
-  
+
+<style scoped>
+.pdf-container {
+	width: 210mm; /* ancho A4 */
+	background: white;
+	padding: 20mm;
+	margin: 0 auto;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	font-family: "Roboto", sans-serif;
+	color: #333;
+	line-height: 1.6;
+}
+
+.title {
+	text-align: center;
+	margin-bottom: 20px;
+	font-size: 24px;
+	font-weight: bold;
+}
+
+h2 {
+	margin-top: 20px;
+	font-size: 18px;
+	color: #444;
+}
+</style>
