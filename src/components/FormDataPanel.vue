@@ -58,6 +58,18 @@
 							<v-chip>{{ formData.comunicacionCliente }}</v-chip>
 						</td>
 					</tr>
+					<tr v-if="formData.problemaEncontrado">
+						<td>Problema Encontrado</td>
+						<td>
+							<v-chip>{{ problemaEncontradoTexto }}</v-chip>
+						</td>
+					</tr>
+					<tr v-if="formData.correctivo">
+						<td>Correctivo Aplicado</td>
+						<td>
+							<v-chip>{{ formData.correctivo }}</v-chip>
+						</td>
+					</tr>
 				</tbody>
 			</v-simple-table>
 		</v-card-text>
@@ -114,6 +126,13 @@ export default {
 				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 				.join(" ");
 		},
+		
+		problemaEncontradoTexto() {
+			if (this.formData.problemaEncontrado === 'otro' && this.formData.otroProblemaEncontrado) {
+				return this.formData.otroProblemaEncontrado;
+			}
+			return this.formData.problemaEncontrado || "el estabilizador desconectado/toma de energía averiada/fuente de poder apagada";
+		}
 	},
 };
 </script>

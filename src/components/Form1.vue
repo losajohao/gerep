@@ -68,7 +68,7 @@
 						@input="$emit('update:horaFin', $event)"
 					></v-text-field>
 				</v-col>
-				<v-col cols="4">
+				<v-col cols="4" v-if="!ocultarRadioButtons">
 					<v-radio-group
 						row
 						v-model="desplazamientoLocal"
@@ -85,7 +85,7 @@
 				</v-col>
 				<v-col
 					cols="6"
-					v-if="desplazamientoLocal === 'no'"
+					v-if="desplazamientoLocal === 'no' && !ocultarRadioButtons"
 				>
 					<v-radio-group
 						row
@@ -100,6 +100,38 @@
 							value="no"
 						></v-radio>
 					</v-radio-group>
+				</v-col>
+				
+				<!-- Campos especiales para ticket 1/2 y tipo 5 -->
+				<v-col cols="6" v-if="mostrarCamposEspeciales">
+					<v-select
+						:items="[
+							'el estabilizador desconectado',
+							'toma de energía averiada',
+							'fuente de poder apagada',
+							'otro'
+						]"
+						label="Problema Encontrado"
+						outlined
+						v-model="problemaEncontradoLocal"
+					/>
+				</v-col>
+				
+				<v-col cols="6" v-if="mostrarCamposEspeciales && problemaEncontradoLocal === 'otro'">
+					<v-text-field
+						label="Especificar Otro Problema"
+						outlined
+						v-model="otroProblemaEncontradoLocal"
+					></v-text-field>
+				</v-col>
+				
+				<v-col cols="12" v-if="mostrarCampoCorrectivo">
+					<v-textarea
+						label="Correctivo Aplicado"
+						outlined
+						v-model="correctivoLocal"
+						rows="3"
+					></v-textarea>
 				</v-col>
 			</v-row>
 		</v-container>
@@ -149,6 +181,22 @@
 				type: String,
 				default: null,
 			},
+			tipo: {
+				type: String,
+				default: null,
+			},
+			problemaEncontrado: {
+				type: String,
+				default: null,
+			},
+			otroProblemaEncontrado: {
+				type: String,
+				default: null,
+			},
+			correctivo: {
+				type: String,
+				default: null,
+			},
 		},
 		computed: {
 			pronombreLocal: {
@@ -182,6 +230,67 @@
 				set(value) {
 					this.$emit("update:comunicacionCliente", value);
 				},
+			},
+			
+			// Computed para determinar si mostrar los campos especiales (problema encontrado)
+			mostrarCamposEspeciales() {
+				return (this.ticket === "1" && this.tipo === "5") || (this.ticket === "2" && this.tipo === "5");
+			},
+			
+			// Computed para determinar si mostrar el campo correctivo (solo para ticket 1 tipo 5)
+			mostrarCampoCorrectivo() {
+				return this.ticket === "1" && this.tipo === "5";
+			},
+			
+			// Computed properties para los nuevos campos
+			problemaEncontradoLocal: {
+				get() {
+					return this.problemaEncontrado;
+				},
+				set(value) {
+					this.$emit("update:problemaEncontrado", value);
+				}
+			},
+			
+			otroProblemaEncontradoLocal: {
+				get() {
+					return this.otroProblemaEncontrado;
+				},
+				set(value) {
+					this.$emit("update:otroProblemaEncontrado", value);
+				}
+			},
+			
+			correctivoLocal: {
+				get() {
+					return this.correctivo;
+				},
+				set(value) {
+					this.$emit("update:correctivo", value);
+				}
+			},
+			
+			// Computed para determinar si ocultar los radio buttons
+			ocultarRadioButtons() {
+				// Condiciones donde se ocultan los radio buttons
+				const condicionesOcultar = [
+					// Problema de energía comercial en site/POP tipo A
+					{ ticket: "1", tipo: "2" }, // Reclamo + Problema energía comercial
+					{ ticket: "2", tipo: "2" }, // Proactivo + Problema energía comercial
+					{ ticket: "1", tipo: "3" }, // Reclamo + Anexo desconfigurado
+					{ ticket: "1", tipo: "4" }, // Reclamo + Anexo deslogueo
+					{ ticket: "1", tipo: "5" }, // Reclamo + Sistema eléctrico cliente
+					{ ticket: "2", tipo: "5" }, // Proactivo + Sistema eléctrico cliente
+					
+					// Aquí se pueden agregar más condiciones fácilmente
+					// { ticket: "1", tipo: "3" }, // Ejemplo: Reclamo + Otro tipo
+					// { ticket: "2", tipo: "4" }, // Ejemplo: Proactivo + Otro tipo
+				];
+				
+				// Verificar si la combinación actual coincide con alguna condición
+				return condicionesOcultar.some(condicion => 
+					this.ticket === condicion.ticket && this.tipo === condicion.tipo
+				);
 			},
 		},
 		methods: {
