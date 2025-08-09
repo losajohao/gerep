@@ -174,148 +174,152 @@
 		components: { Speach1, Speach2, Speach3, Form1 },
 		data() {
 			return {
-				e1: 1, // Comienza en el primer paso
-				tipo: null,
-				ticket: null,
-				cuismp: null,
-				fechaInicio: null,
-				horaInicio: null,
-				fechaFin: null,
-				horaFin: null,
-				desplazamiento: null,
-				pronombre: null,
-				nombre: null,
-				comunicacionCliente: null,
-				tipos: [
-					{
-						label:
-							"FALLA DE ENERGIA (CLIENTE) - SERVICIO RESTABLECIDO POR POWER ON",
-						value: "1",
-						estado: true,
-					},
-					{
-						label:
-							"FALLA DE ENERGIA (CLIENTE) - FALLA EN SISTEMA ELECTRICO DE CLIENTE",
-						value: "2",
-						estado: false,
-					},
-					{
-						label: "PROBLEMA DE ENERGIA COMERCIAL EN SITE/POP TIPO A",
-						value: "3",
-						estado: false,
-					},
-					{
-						label: "CORTE DE FIBRA OPTICA TRONCAL DE RED - CASO FORTUITO",
-						value: "4",
-						estado: false,
-					},
-					{ label: "PROBLEMA LAN DEL CLIENTE", value: "5", estado: false },
-					{ label: "ANEXO DESCONFIGURADO", value: "6", estado: false },
-					{
-						label:
-							"CLIENTE: CAÍDA DE SERVICIO-MANIPULACIÓN DE EQUIPOS/CABLEADO",
-						value: "7",
-						estado: false,
-					},
-					{
-						label:
-							"CORTE DE FIBRA OPTICA / COBRE DE ULTIMA MILLA - CASO FORTUITO",
-						value: "8",
-						estado: false,
-					},
-					{
-						label: "SATURAMIENTO ANCHO DE BANDA ALQUILADO",
-						value: "9",
-						estado: false,
-					},
-					{ label: "TELEFONO / ANEXO AVERIADO", value: "10", estado: false },
-					{ label: "JUMPER DE FIBRA AVERIADO", value: "11", estado: false },
-				],
+				// Ya no necesitamos el composable en data, trabajamos directamente con el store
 			};
 		},
+		
 		computed: {
+			// Usar currentStep en lugar de e1 - directamente del store para mejor reactividad
+			e1() {
+				return this.$store.getters['stepper/currentStep'];
+			},
+			
+			// Propiedades computadas del formulario - directamente del store
+			ticket: {
+				get() {
+					return this.$store.getters['stepper/formData'].ticket;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'ticket', value });
+				}
+			},
+			
+			tipo: {
+				get() {
+					return this.$store.getters['stepper/formData'].tipo;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'tipo', value });
+				}
+			},
+			
+			cuismp: {
+				get() {
+					return this.$store.getters['stepper/formData'].cuismp;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'cuismp', value });
+				}
+			},
+			
+			fechaInicio: {
+				get() {
+					return this.$store.getters['stepper/formData'].fechaInicio;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'fechaInicio', value });
+				}
+			},
+			
+			horaInicio: {
+				get() {
+					return this.$store.getters['stepper/formData'].horaInicio;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'horaInicio', value });
+				}
+			},
+			
+			fechaFin: {
+				get() {
+					return this.$store.getters['stepper/formData'].fechaFin;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'fechaFin', value });
+				}
+			},
+			
+			horaFin: {
+				get() {
+					return this.$store.getters['stepper/formData'].horaFin;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'horaFin', value });
+				}
+			},
+			
+			desplazamiento: {
+				get() {
+					return this.$store.getters['stepper/formData'].desplazamiento;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'desplazamiento', value });
+				}
+			},
+			
+			pronombre: {
+				get() {
+					return this.$store.getters['stepper/formData'].pronombre;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'pronombre', value });
+				}
+			},
+			
+			nombre: {
+				get() {
+					return this.$store.getters['stepper/formData'].nombre;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'nombre', value });
+				}
+			},
+			
+			comunicacionCliente: {
+				get() {
+					return this.$store.getters['stepper/formData'].comunicacionCliente;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'comunicacionCliente', value });
+				}
+			},
+			
+			// Computed del store
 			tiposFiltrados() {
-				return this.tipos.filter((tipo) => tipo.estado);
+				return this.$store.getters['stepper/tiposFiltrados'];
 			},
+			
 			componenteSeleccionado() {
-				if (this.ticket === "1" && this.tipo === "1") return "Speach1";
-				if (this.ticket === "2" && this.tipo === "1") return "Speach2";
-				return null;
+				return this.$store.getters['stepper/componenteSeleccionado'];
 			},
+			
+			formData() {
+				return this.$store.getters['stepper/formData'];
+			}
 		},
+		
 		methods: {
 			irAPaso2() {
-				if (!this.ticket || !this.tipo) {
-					alert("Por favor selecciona las opciones en el paso 1.");
-					return;
-				}
-				this.e1 = 2;
+				// Usar directamente el dispatch del store para simplificar
+				console.log('Intentando ir al paso 2...');
+				console.log('Datos actuales:', this.$store.getters['stepper/formData']);
+				console.log('¿Es válido el paso 1?:', this.$store.getters['stepper/isStep1Valid']);
+				
+				this.$store.dispatch('stepper/goToStep', 2).catch(error => {
+					console.error('Error al ir al paso 2:', error);
+					alert(error.message);
+				});
 			},
+			
 			irAPaso3() {
-				if (this.cuismp === null || this.cuismp === "") {
-					alert("Por favor ingrese el campo CUISMP.");
-					return;
-				}
-				if (this.fechaInicio === null || this.fechaInicio === "") {
-					alert("Por favor completa el campo Fecha de Inicio.");
-					return;
-				}
-				if (this.horaInicio === null || this.horaInicio === "") {
-					alert("Por favor completa el campo Hora de Inicio.");
-					return;
-				}
-				if (this.fechaFin === null || this.fechaFin === "") {
-					alert("Por favor completa el campo Fecha de Fin.");
-					return;
-				}
-				if (this.horaFin === null || this.horaFin === "") {
-					alert("Por favor completa el campo Hora de Fin.");
-					return;
-				}
-				if (this.desplazamiento === null || this.desplazamiento === "") {
-					alert("Por favor selecciona una opción de Desplazamiento.");
-					return;
-				}
-				if (
-					this.ticket == "1" &&
-					(this.pronombre === null || this.pronombre === "")
-				) {
-					alert("Por favor selecciona un pronombre.");
-					return;
-				}
-				if (
-					this.ticket == "1" &&
-					(this.nombre === null || this.nombre === "")
-				) {
-					alert("Por favor completa el campo Nombre.");
-					return;
-				}
-				if (
-					this.comunicacionCliente === null ||
-					this.comunicacionCliente === ""
-				) {
-					alert(
-						"Por favor selecciona una opción de Comunicación con el cliente."
-					);
-					return;
-				}
-
-				this.e1 = 3;
+				this.$store.dispatch('stepper/goToStep', 3).catch(error => {
+					alert(error.message);
+				});
 			},
+			
 			irAPaso1() {
-				this.e1 = 1;
-				this.tipo = null;
-				this.ticket = null;
-				this.cuismp = null;
-				this.fechaInicio = null;
-				this.horaInicio = null;
-				this.fechaFin = null;
-				this.horaFin = null;
-				this.desplazamiento = null;
-				this.pronombre = null;
-				this.nombre = null;
-				this.comunicacionCliente = null;
-			},
-		},
+				this.$store.dispatch('stepper/resetStepper');
+			}
+		}
 	};
 </script>

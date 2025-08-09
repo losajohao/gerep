@@ -53,43 +53,68 @@
 </template>
 
 <script>
-import { auth } from "../utils/firebase";
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { useAuth } from '../composables/useAuth';
+import { useAuthFlow } from '../composables/useAuthFlow';
 
 export default {
   data() {
     return {
-      email: "",
-      password: "",
-      user: null,
-      error: null,
-      loading: false,
+      email: '',
+      password: ''
     };
   },
-  created() {
-    onAuthStateChanged(auth, (u) => {
-      this.user = u;
-      if (u) {
-        this.$router.push("/home");
-      }
-    });
+  
+  computed: {
+    // Obtener propiedades reactivas de los composables
+    loading() {
+      const { loading } = useAuth();
+      return loading.value;
+    },
+    
+    error() {
+      const { error } = useAuth();
+      return error.value;
+    }
   },
+  
+  async mounted() {
+    // Inicializar autenticación
+    const { initializeAuth } = useAuth();
+    const { setupAuthRedirect } = useAuthFlow();
+    
+    await initializeAuth();
+    setupAuthRedirect();
+    
+    // Configurar watcher para redirecciones automáticas
+    this.$watch(
+      () => this.$store.getters['auth/currentUser'],
+      (user) => {
+        if (user && this.$route.path === '/login') {
+          this.$router.push('/home').catch(err => {
+            if (err.name !== 'NavigationDuplicated') {
+              console.error('Error en navegación:', err);
+            }
+          });
+        }
+      },
+      { immediate: true }
+    );
+  },
+  
   methods: {
     async handleLogin() {
-      this.error = null;
-      this.loading = true;
-      try {
-        await signInWithEmailAndPassword(auth, this.email, this.password);
-        if (this.$route.path !== "/home") {
-          this.$router.push("/home");
-        }
-      } catch (err) {
-        this.error = err.message;
-      } finally {
-        this.loading = false;
+      const { login, clearError } = useAuth();
+      const { handleLoginSuccess } = useAuthFlow();
+      
+      clearError();
+      
+      const success = await login(this.email, this.password);
+      
+      if (success) {
+        handleLoginSuccess(this);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -1,37 +1,50 @@
-import { ref } from "vue";
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../utils/firebase";
+import store from "../store";
 
 export function useAuth() {
-  const user = ref(null);
-  const error = ref(null);
-
-  // Observar cambios en el usuario
-  onAuthStateChanged(auth, (u) => {
-    user.value = u;
-  });
-
-  // Iniciar sesión
-  const login = async (email, password) => {
-    error.value = null;
-    try {
-      const res = await signInWithEmailAndPassword(auth, email, password);
-      user.value = res.user;
-    } catch (err) {
-      error.value = err.message;
-    }
-  };
-
-  // Cerrar sesión
-  const logout = async () => {
-    await signOut(auth);
-    user.value = null;
-  };
-
+  // Para Vue 2, retornamos un objeto con propiedades reactivas que se sincronizan con el store
   return {
-    user,
-    error,
-    login,
-    logout
+    // Estado - getters que se evalúan dinámicamente
+    get user() {
+      return { value: store.getters['auth/currentUser'] };
+    },
+    get isAuthenticated() {
+      return { value: store.getters['auth/isAuthenticated'] };
+    },
+    get loading() {
+      return { value: store.getters['auth/isLoading'] };
+    },
+    get error() {
+      return { value: store.getters['auth/authError'] };
+    },
+    get isInitialized() {
+      return { value: store.getters['auth/isAuthInitialized'] };
+    },
+    
+    // Métodos
+    initializeAuth() {
+      return store.dispatch('auth/initializeAuthListener');
+    },
+    
+    async login(email, password) {
+      try {
+        await store.dispatch('auth/login', { email, password });
+        return true;
+      } catch (err) {
+        return false;
+      }
+    },
+    
+    async logout() {
+      try {
+        await store.dispatch('auth/logout');
+        return true;
+      } catch (err) {
+        return false;
+      }
+    },
+    
+    clearError() {
+      store.dispatch('auth/clearError');
+    }
   };
 }
