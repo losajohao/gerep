@@ -12,12 +12,16 @@ export default {
 			fechaFin: null,
 			horaFin: null,
 			desplazamiento: null,
+			tipoDesplazamiento: null,
 			pronombre: null,
 			nombre: null,
 			comunicacionCliente: null,
 			problemaEncontrado: null,
 			otroProblemaEncontrado: null,
 			correctivo: null,
+			causaProblema: null,
+			otraCausaProblema: null,
+			distanciaCorte: null,
 		},
 		validationErrors: {},
 		tipos: [
@@ -51,7 +55,7 @@ export default {
 			{
 				label: "CORTE DE FIBRA OPTICA TRONCAL DE RED - CASO FORTUITO",
 				value: "6",
-				estado: false,
+				estado: true,
 			},
 			{ label: "PROBLEMA LAN DEL CLIENTE", value: "7", estado: false },
 			{
@@ -84,8 +88,8 @@ export default {
 		// Getter para tipos válidos según el ticket seleccionado
 		tiposValidos: (state) => {
 			const combinacionesValidas = [
-				{ ticket: "1", tipos: ["1", "2", "3", "4", "5"] }, // Reclamos: tipos 1, 2, 3
-				{ ticket: "2", tipos: ["1", "2", "5"] }, // Proactivos: tipos 1, 2
+				{ ticket: "1", tipos: ["1", "2", "3", "4", "5", "6"] }, // Reclamos: tipos 1, 2, 3
+				{ ticket: "2", tipos: ["1", "2", "5", "6"] }, // Proactivos: tipos 1, 2
 			];
 
 			const ticketActual = state.formData.ticket;
@@ -115,6 +119,7 @@ export default {
 				{ ticket: "1", tipo: "4" }, // Speach6
 				{ ticket: "2", tipo: "5" }, // Speach7
 				{ ticket: "1", tipo: "5" }, // Speach8
+				{ ticket: "1", tipo: "6" }, // Speach9
 			];
 
 			return combinacionesValidas.some(
@@ -140,6 +145,8 @@ export default {
 				return "Speach7";
 			if (state.formData.ticket === "1" && state.formData.tipo === "5")
 				return "Speach8";
+			if (state.formData.ticket === "1" && state.formData.tipo === "6")
+				return "Speach9";
 			return null;
 		},
 

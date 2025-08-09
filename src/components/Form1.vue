@@ -83,6 +83,21 @@
 						></v-radio>
 					</v-radio-group>
 				</v-col>
+				
+				<!-- Campo para tipo de desplazamiento cuando desplazamiento = "si" -->
+				<v-col cols="8" v-if="desplazamientoLocal === 'si' && !ocultarRadioButtons">
+					<v-select
+						:items="[
+							{ text: 'Al punto de presencia de Claro', value: 'punto_presencia' },
+							{ text: 'A la sede del cliente', value: 'sede_cliente' }
+						]"
+						item-text="text"
+						item-value="value"
+						label="Tipo de Desplazamiento"
+						outlined
+						v-model="tipoDesplazamientoLocal"
+					/>
+				</v-col>
 				<v-col
 					cols="6"
 					v-if="desplazamientoLocal === 'no' && !ocultarRadioButtons"
@@ -132,6 +147,44 @@
 						v-model="correctivoLocal"
 						rows="3"
 					></v-textarea>
+				</v-col>
+				
+				<!-- Campos para causa del problema (ticket 1 y tipo 6) -->
+				<v-col cols="6" v-if="mostrarCamposCausaProblema">
+					<v-select
+						:items="[
+							{ text: 'Paso de camión', value: 'paso_camion' },
+							{ text: 'Climáticos', value: 'climaticos' },
+							{ text: 'Intento de robo', value: 'intento_robo' },
+							{ text: 'Roedor', value: 'roedor' },
+							{ text: 'Por terceros (especificar brevemente)', value: 'por_terceros' }
+						]"
+						item-text="text"
+						item-value="value"
+						label="Causa del Problema"
+						outlined
+						v-model="causaProblemaLocal"
+					/>
+				</v-col>
+				
+				<v-col cols="6" v-if="mostrarCamposCausaProblema && causaProblemaLocal === 'por_terceros'">
+					<v-text-field
+						label="Especificar Otra Causa"
+						outlined
+						v-model="otraCausaProblemaLocal"
+					></v-text-field>
+				</v-col>
+				
+				<!-- Campo para distancia del corte (ticket 1 y tipo 6) -->
+				<v-col cols="6" v-if="mostrarCamposCausaProblema">
+					<v-text-field
+						label="Distancia del Corte (Km)"
+						outlined
+						v-model="distanciaCorteLoca"
+						type="number"
+						step="0.1"
+						min="0"
+					></v-text-field>
 				</v-col>
 			</v-row>
 		</v-container>
@@ -197,6 +250,22 @@
 				type: String,
 				default: null,
 			},
+			tipoDesplazamiento: {
+				type: String,
+				default: null,
+			},
+			causaProblema: {
+				type: String,
+				default: null,
+			},
+			otraCausaProblema: {
+				type: String,
+				default: null,
+			},
+			distanciaCorte: {
+				type: String,
+				default: null,
+			},
 		},
 		computed: {
 			pronombreLocal: {
@@ -242,6 +311,11 @@
 				return this.ticket === "1" && this.tipo === "5";
 			},
 			
+			// Computed para determinar si mostrar los campos de causa del problema (ticket 1 tipo 6)
+			mostrarCamposCausaProblema() {
+				return this.ticket === "1" && this.tipo === "6";
+			},
+			
 			// Computed properties para los nuevos campos
 			problemaEncontradoLocal: {
 				get() {
@@ -267,6 +341,42 @@
 				},
 				set(value) {
 					this.$emit("update:correctivo", value);
+				}
+			},
+			
+			tipoDesplazamientoLocal: {
+				get() {
+					return this.tipoDesplazamiento;
+				},
+				set(value) {
+					this.$emit("update:tipoDesplazamiento", value);
+				}
+			},
+			
+			causaProblemaLocal: {
+				get() {
+					return this.causaProblema;
+				},
+				set(value) {
+					this.$emit("update:causaProblema", value);
+				}
+			},
+			
+			otraCausaProblemaLocal: {
+				get() {
+					return this.otraCausaProblema;
+				},
+				set(value) {
+					this.$emit("update:otraCausaProblema", value);
+				}
+			},
+			
+			distanciaCorteLoca: {
+				get() {
+					return this.distanciaCorte;
+				},
+				set(value) {
+					this.$emit("update:distanciaCorte", value);
 				}
 			},
 			

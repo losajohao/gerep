@@ -118,12 +118,16 @@
 							:fechaFin.sync="fechaFin"
 							:horaFin.sync="horaFin"
 							:desplazamiento.sync="desplazamiento"
+							:tipoDesplazamiento.sync="tipoDesplazamiento"
 							:pronombre.sync="pronombre"
 							:nombre.sync="nombre"
 							:comunicacionCliente.sync="comunicacionCliente"
 							:problemaEncontrado.sync="problemaEncontrado"
 							:otroProblemaEncontrado.sync="otroProblemaEncontrado"
 							:correctivo.sync="correctivo"
+							:causaProblema.sync="causaProblema"
+							:otraCausaProblema.sync="otraCausaProblema"
+							:distanciaCorte.sync="distanciaCorte"
 							:ticket="ticket"
 							:tipo="tipo"
 						/>
@@ -164,12 +168,16 @@
 									fechaFin: fechaFin,
 									horaFin: horaFin,
 									desplazamiento: desplazamiento,
+									tipoDesplazamiento: tipoDesplazamiento,
 									pronombre: pronombre,
 									nombre: nombre,
 									comunicacionCliente: comunicacionCliente,
 									problemaEncontrado: problemaEncontrado,
 									otroProblemaEncontrado: otroProblemaEncontrado,
 									correctivo: correctivo,
+									causaProblema: causaProblema,
+									otraCausaProblema: otraCausaProblema,
+									distanciaCorte: distanciaCorte,
 								}"
 							/>
 							<div v-else>
@@ -192,10 +200,11 @@
 	import Speach6 from "../components/Speach6.vue";
 	import Speach7 from "../components/Speach7.vue";
 	import Speach8 from "../components/Speach8.vue";
+	import Speach9 from "../components/Speach9.vue";
 	import Form1 from "../components/Form1.vue";
 
 	export default {
-		components: { Speach1, Speach2, Speach3, Speach4, Speach5, Speach6, Speach7, Speach8, Form1 },
+		components: { Speach1, Speach2, Speach3, Speach4, Speach5, Speach6, Speach7, Speach8, Speach9, Form1 },
 		data() {
 			return {
 				// Ya no necesitamos el composable en data, trabajamos directamente con el store
@@ -332,6 +341,42 @@
 				},
 				set(value) {
 					this.$store.dispatch('stepper/updateFormField', { field: 'correctivo', value });
+				}
+			},
+			
+			tipoDesplazamiento: {
+				get() {
+					return this.$store.getters['stepper/formData'].tipoDesplazamiento;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'tipoDesplazamiento', value });
+				}
+			},
+			
+			causaProblema: {
+				get() {
+					return this.$store.getters['stepper/formData'].causaProblema;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'causaProblema', value });
+				}
+			},
+			
+			otraCausaProblema: {
+				get() {
+					return this.$store.getters['stepper/formData'].otraCausaProblema;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'otraCausaProblema', value });
+				}
+			},
+			
+			distanciaCorte: {
+				get() {
+					return this.$store.getters['stepper/formData'].distanciaCorte;
+				},
+				set(value) {
+					this.$store.dispatch('stepper/updateFormField', { field: 'distanciaCorte', value });
 				}
 			},
 			
