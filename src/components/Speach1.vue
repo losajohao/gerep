@@ -2,69 +2,10 @@
 	<div>
 		<v-row>
 			<v-col cols="4">
-				<v-card>
-					<v-card-title>Datos de formulario</v-card-title>
-					<v-card-text>
-						<v-simple-table>
-							<tbody>
-								<tr>
-									<td>Pronombre</td>
-									<td>
-										<v-chip>{{ formData.pronombre }}</v-chip>
-									</td>
-								</tr>
-								<tr>
-									<td>Nombre</td>
-									<td>
-										<v-chip>{{ nombreFormateado }}</v-chip>
-									</td>
-								</tr>
-								<tr>
-									<td>CUISMP</td>
-									<td>
-										<v-chip>{{ formData.cuismp }}</v-chip>
-									</td>
-								</tr>
-								<tr>
-									<td>Fecha Inicio</td>
-									<td>
-										<v-chip>{{ formData.fechaInicio }}</v-chip>
-									</td>
-								</tr>
-								<tr>
-									<td>Hora Inicio</td>
-									<td>
-										<v-chip>{{ formData.horaInicio }}</v-chip>
-									</td>
-								</tr>
-								<tr>
-									<td>Fecha Fin</td>
-									<td>
-										<v-chip>{{ formData.fechaFin }}</v-chip>
-									</td>
-								</tr>
-								<tr>
-									<td>Hora Fin</td>
-									<td>
-										<v-chip>{{ formData.horaFin }}</v-chip>
-									</td>
-								</tr>
-								<tr>
-									<td>Desplazamiento</td>
-									<td>
-										<v-chip>{{ formData.desplazamiento }}</v-chip>
-									</td>
-								</tr>
-								<tr>
-									<td>Comunicacion Cliente</td>
-									<td>
-										<v-chip>{{ formData.comunicacionCliente }}</v-chip>
-									</td>
-								</tr>
-							</tbody>
-						</v-simple-table>
-					</v-card-text>
-				</v-card>
+				<FormDataPanel 
+					:formData="formData" 
+					:showPersonalFields="true"
+				/>
 			</v-col>
 			<v-col cols="8">
 				<div class="pdf-container">
@@ -124,44 +65,45 @@
 </template>
 
 <script>
-	export default {
-		name: "Speach1",
-		props: {
-			formData: {
-				type: Object,
-				required: true,
-			},
+import FormDataPanel from './FormDataPanel.vue';
+
+export default {
+	name: "Speach1",
+	components: {
+		FormDataPanel
+	},
+	props: {
+		formData: {
+			type: Object,
+			required: true,
 		},
-		computed: {
-			fechaInicioFormateada() {
-				if (!this.formData.fechaInicio) return "";
-				const fecha = new Date(this.formData.fechaInicio);
-				const dia = fecha.getDate().toString().padStart(2, "0");
-				const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
-				const año = fecha.getFullYear().toString();
-				return `${dia}/${mes}/${año}`;
-			},
-			fechaFinFormateada() {
-				if (!this.formData.fechaFin) return "";
-				const fecha = new Date(this.formData.fechaFin);
-				const dia = fecha.getDate().toString().padStart(2, "0");
-				const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
-				const año = fecha.getFullYear().toString();
-				return `${dia}/${mes}/${año}`;
-			},
-			nombreFormateado() {
-				if (!this.formData.nombre) return "";
-				console.log("nombreFormateado:", this.formData.nombre
-					.split(" ")
-					.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-					.join(" "));
-				return this.formData.nombre
-					.split(" ")
-					.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-					.join(" ");
-			},
+	},
+	computed: {
+		fechaInicioFormateada() {
+			if (!this.formData.fechaInicio) return "";
+			const fecha = new Date(this.formData.fechaInicio);
+			const dia = fecha.getDate().toString().padStart(2, "0");
+			const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+			const año = fecha.getFullYear().toString();
+			return `${dia}/${mes}/${año}`;
 		},
-	};
+		fechaFinFormateada() {
+			if (!this.formData.fechaFin) return "";
+			const fecha = new Date(this.formData.fechaFin);
+			const dia = fecha.getDate().toString().padStart(2, "0");
+			const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+			const año = fecha.getFullYear().toString();
+			return `${dia}/${mes}/${año}`;
+		},
+		nombreFormateado() {
+			if (!this.formData.nombre) return "";
+			return this.formData.nombre
+				.split(" ")
+				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+				.join(" ");
+		},
+	},
+};
 </script>
 
 <style scoped>

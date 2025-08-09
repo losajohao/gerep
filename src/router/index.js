@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import { auth } from '../utils/firebase';
 import LoginView from '@/views/LoginView.vue';
+import store from '../store';
 
 Vue.use(VueRouter);
 
@@ -31,12 +31,20 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const user = auth.currentUser;
+  const isAuthenticated = store.getters['auth/isAuthenticated'];
+  const isInitialized = store.getters['auth/isAuthInitialized'];
 
-  if (requiresAuth && !user) {
+  // Si no está inicializado, permitir la navegación
+  // El composable useAuthFlow manejará la redirección apropiada
+  if (!isInitialized) {
+    next();
+    return;
+  }
+
+  if (requiresAuth && !isAuthenticated) {
     next('/login');
-  } else if (to.path === '/login' && user) {
-    // Redirige solo si no estamos ya en /home
+  } else if (to.path === '/login' && isAuthenticated) {
+    // Evitar navegación redundante a login si ya está autenticado
     if (from.path !== '/home') {
       next('/home');
     } else {
@@ -46,6 +54,5 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
-
 
 export default router;
