@@ -9,31 +9,37 @@
 			</v-col>
 			<v-col cols="8">
 				<div class="pdf-container">
-					<p><strong>RESPONSABILIDAD: </strong>CLIENTE</p>
+					<p><strong>RESPONSABILIDAD: </strong>TERCEROS</p>
 					<p>
-						<strong>TIPIFICACION: </strong>FALLA DE ENERGIA (CLIENTE) - SERVICIO
-						RESTABLECIDO POR POWER ON
+						<strong>TIPIFICACION: </strong>CORTE DE FIBRA OPTICA / COBRE DE
+						ULTIMA MILLA - CASO FORTUITO
 					</p>
-					<p><strong>DETERMINACIÓN DE CAUSA:</strong></p>
+					<p><strong>DETERMINACIÓN DE LA CAUSA:</strong></p>
 					<P>
-						El inconveniente se originó por un evento de energía en la sede del
-						cliente, afectando los equipos de comunicaciones.
+						Se identificó un corte en el cable de fibra óptica que afectó a un
+						equipo ubicado en nuestro punto de presencia, desde donde se brinda
+						el servicio al cliente. Dicho corte fue ocasionado por
+						{{ causaProblemaTexto }}.
 					</P>
 					<P><strong>MEDIDAS CORRECTIVAS Y/O PREVENTIVAS TOMADAS</strong></P>
 					<p>
 						El cliente, {{ formData.pronombre }} {{ nombreFormateado }}, reportó
-						inconvenientes con el servicio de datos identificado con el CUISMP
-						{{ formData.cuismp }}, se genero el ticket el día
+						problemas con su servicio de datos identificado con el CUISMP
+						{{ formData.cuismp }}, y se generó un ticket el día
 						{{ fechaInicioFormateada }} a las
 						{{ formData.horaInicio }}
-						horas. Inmediatamente, Claro revisó el enlace encontrando pérdida de
-						conectividad con los equipos ubicados en la sede del cliente. Ante
-						ello, {{ desplazamientoTexto }} {{ comunicacionTexto }}.
-						Posteriormente, se verificó el restablecimiento del servicio por
-						encendido de equipos sin la intervención del personal de Claro.
-						Finalmente, se comprobó el correcto funcionamiento y estabilidad del
-						servicio el {{ fechaFinFormateada }} a las
-						{{ formData.horaFin }} horas.
+						horas. Inmediatamente, Claro revisó el enlace, encontrando un
+						problema entre el local del cliente y el punto de presencia de
+						Claro. {{ desplazamientoTexto
+						}}<span v-if="formData.distanciaCorte">
+							a {{ formData.distanciaCorte }}Km.</span
+						>
+						y se pudo constatar que el corte de fibra óptica fue ocasionado por
+						{{ causaProblemaTexto }}. Posteriormente se realizó la fusión y
+						empalme correspondientes. Finalmente, luego del correctivo, se
+						superó el inconveniente el día {{ fechaFinFormateada }} a las
+						{{ formData.horaFin }} horas, comprobándose el correcto
+						funcionamiento y estabilidad del servicio.
 					</p>
 
 					<p>
@@ -56,7 +62,7 @@
 	import FormDataPanel from "./FormDataPanel.vue";
 
 	export default {
-		name: "Speach1",
+		name: "Speach9",
 		components: {
 			FormDataPanel,
 		},
@@ -90,27 +96,39 @@
 					.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 					.join(" ");
 			},
+			causaProblemaTexto() {
+				if (!this.formData.causaProblema) return "terceros";
+
+				const causasMap = {
+					paso_camion: "paso de camión",
+					climaticos: "factores climáticos",
+					intento_robo: "intento de robo",
+					roedor: "roedor",
+					por_terceros: this.formData.otraCausaProblema || "terceros",
+				};
+
+				return causasMap[this.formData.causaProblema] || "terceros";
+			},
 
 			desplazamientoTexto() {
 				if (this.formData.desplazamiento === "si") {
-					if (this.formData.tipoDesplazamiento === "sede_cliente") {
-						return "se gestionó el desplazamiento de personal técnico especializado a la sede del cliente.";
-					} else if (this.formData.tipoDesplazamiento === "punto_presencia") {
-						return "se gestionó el desplazamiento de personal técnico especializado al punto de presencia de Claro.";
+					if (this.formData.tipoDesplazamiento) {
+						const tiposMap = {
+							punto_presencia: "al punto de presencia de Claro",
+							sede_cliente: "a la sede del cliente"
+						};
+
+						return `Posteriormente, se gestionó el desplazamiento de personal técnico especializado ${
+							tiposMap[this.formData.tipoDesplazamiento] ||
+							"al sitio correspondiente"
+						} para la revisión de las conexiones; dicho personal encontró un corte de fibra óptica`;
 					} else {
-						return "se gestionó el desplazamiento de personal técnico especializado hacia la sede del cliente.";
+						// Si hay desplazamiento pero no se especificó el tipo
+						return "Posteriormente, se gestionó el desplazamiento de personal técnico especializado para la revisión de las conexiones; dicho personal encontró un corte de fibra óptica";
 					}
 				}
-				return "";
-			},
 
-			comunicacionTexto() {
-				if (this.formData.comunicacionCliente === "no") {
-					return "En comunicación con el cliente se validó un evento de energía en la sede del cliente";
-				} else if (this.formData.comunicacionCliente === "si") {
-					return "Tratamos de comunicarnos con el cliente, para que nos informe si se encontraba realizando algún trabajo o si presentó algún evento de energía en su sede";
-				}
-				return "";
+				return "Se encontró un corte de fibra óptica";
 			},
 		},
 	};

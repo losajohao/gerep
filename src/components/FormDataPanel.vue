@@ -52,7 +52,13 @@
 							<v-chip>{{ formData.desplazamiento }}</v-chip>
 						</td>
 					</tr>
-					<tr>
+					<tr v-if="formData.tipoDesplazamiento">
+						<td>Tipo de Desplazamiento</td>
+						<td>
+							<v-chip>{{ tipoDesplazamientoTexto }}</v-chip>
+						</td>
+					</tr>
+					<tr v-if="formData.comunicacionCliente">
 						<td>Comunicación Cliente</td>
 						<td>
 							<v-chip>{{ formData.comunicacionCliente }}</v-chip>
@@ -68,6 +74,18 @@
 						<td>Correctivo Aplicado</td>
 						<td>
 							<v-chip>{{ formData.correctivo }}</v-chip>
+						</td>
+					</tr>
+					<tr v-if="formData.causaProblema">
+						<td>Causa del Problema</td>
+						<td>
+							<v-chip>{{ causaProblemaTexto }}</v-chip>
+						</td>
+					</tr>
+					<tr v-if="formData.distanciaCorte">
+						<td>Distancia del Corte</td>
+						<td>
+							<v-chip>{{ formData.distanciaCorte }} Km</v-chip>
 						</td>
 					</tr>
 				</tbody>
@@ -132,6 +150,29 @@ export default {
 				return this.formData.otroProblemaEncontrado;
 			}
 			return this.formData.problemaEncontrado || "el estabilizador desconectado/toma de energía averiada/fuente de poder apagada";
+		},
+		
+		tipoDesplazamientoTexto() {
+			const tiposMap = {
+				'punto_presencia': 'Al punto de presencia de Claro',
+				'sede_cliente': 'A la sede del cliente'
+			};
+			
+			return tiposMap[this.formData.tipoDesplazamiento] || this.formData.tipoDesplazamiento;
+		},
+		
+		causaProblemaTexto() {
+			if (!this.formData.causaProblema) return "";
+			
+			const causasMap = {
+				'paso_camion': 'Paso de camión',
+				'climaticos': 'Climáticos',
+				'intento_robo': 'Intento de robo',
+				'roedor': 'Roedor',
+				'por_terceros': this.formData.otraCausaProblema || 'Por terceros'
+			};
+			
+			return causasMap[this.formData.causaProblema] || this.formData.causaProblema;
 		}
 	},
 };
