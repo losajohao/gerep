@@ -4,17 +4,20 @@
     <v-main>
       <router-view/>
     </v-main>
+    <app-footer v-if="isAuthenticated"/>
   </v-app>
 </template>
 
 <script>
 import Appbar from './components/Appbar.vue';
+import AppFooter from './components/AppFooter.vue';
 import { useAuth } from './composables/useAuth';
 
 export default {
   name: 'App',
   components: {
-    Appbar
+    Appbar,
+    AppFooter
   },
   data: () => ({
     //

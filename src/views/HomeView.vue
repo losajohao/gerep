@@ -20,12 +20,12 @@
 			<v-stepper-step step="3" color="#C76B6B"> Vista Previa </v-stepper-step>
 		</v-stepper-header>
 
-		<v-card>
+		<v-card flat elevation="0" class="stepper-container">
 			<v-stepper-items>
 				<!-- STEP 1 -->
 				<v-stepper-content step="1">
 					<v-card
-						class="pa-4 elevation-0"
+						class="pa-4 elevation-0 step-card"
 						flat
 					>
 						<v-container fluid>
@@ -118,7 +118,7 @@
 				<!-- STEP 2 -->
 				<v-stepper-content step="2">
 					<v-card
-						class="pa-4 elevation-0"
+						class="pa-4 elevation-0 step-card"
 						flat
 					>
 						<v-container fluid>
@@ -487,5 +487,19 @@ h3 {
   background-color: rgba(241, 167, 167, 0.1);
   border-color: #F1A7A7;
   color: #C76B6B;
+}
+
+/* Contenedor del stepper sin elevación */
+.stepper-container {
+  background-color: white !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Cards de steps más discretos */
+.step-card {
+  background-color: white !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 </style>

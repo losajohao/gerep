@@ -9,9 +9,19 @@
           elevation="8"
           style="border-radius: 16px;"
           >
-          <v-avatar class="mb-4" style="width: 100px; height: 100px;" >
-            <v-img src="../assets/gerepIcon.png" />
-          </v-avatar>
+          <v-badge
+            color="#C76B6B"
+            content="v1.0 Beta"
+            value="true"
+            overlap
+            offset-x="15"
+            offset-y="25"
+            class="version-badge"
+          >
+            <v-avatar class="mb-4" style="width: 100px; height: 100px;" >
+              <v-img src="../assets/gerepIcon.png" />
+            </v-avatar>
+          </v-badge>
           <v-card-title class="justify-center login-title" style="font-size: 24px; font-weight: bold;">
             Bienvenido
           </v-card-title>
@@ -187,5 +197,26 @@ export default {
   background-color: #ffebee !important;
   color: #c62828 !important;
   border-left: 4px solid #c62828 !important;
+}
+
+/* Badge de versión en el logo del login */
+.version-badge {
+  position: relative;
+}
+
+.version-badge .v-badge__badge {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  min-width: 28px !important;
+  height: 20px !important;
+  border-radius: 10px !important;
+  color: white !important;
+  letter-spacing: 0.2px;
+  background-color: #C76B6B !important;
+  border: 2px solid white !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 </style>
