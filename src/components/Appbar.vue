@@ -7,8 +7,9 @@
     class="custom-appbar"
   >
     <div class="d-flex align-center">
-      <v-icon class="mr-2" color="black">mdi-chart-bar</v-icon>
-      <v-toolbar-title class="appbar-title">GEREP</v-toolbar-title>
+      <v-avatar>
+        <v-img src="../assets/gerepIcon.png" />
+      </v-avatar>
     </div>
 
     <v-spacer></v-spacer>
@@ -36,19 +37,33 @@ export default {
 </script>
 
 <style scoped>
+/* Appbar minimalista con acentos rosados */
 .custom-appbar {
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #f5f5f5 !important;
+  background-color: white !important;
 }
 
 .appbar-title {
   font-weight: bold;
-  color: #333;
+  color: #C76B6B !important;
 }
 
+/* Chip con paleta rosada minimalista */
 .custom-chip {
   font-size: 12px;
   border-radius: 12px;
-  color: #1976d2; /* Azul */
-  border-color: #1976d2;
+  color: #C76B6B !important;
+  border-color: #F1A7A7 !important;
+  background-color: rgba(241, 167, 167, 0.1) !important;
+}
+
+.custom-chip:hover {
+  background-color: rgba(241, 167, 167, 0.2) !important;
+  border-color: #C76B6B !important;
+}
+
+/* Avatar con sombra sutil */
+.v-avatar {
+  box-shadow: 0 2px 4px rgba(199, 107, 107, 0.1);
 }
 </style>

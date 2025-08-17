@@ -4,6 +4,7 @@
 			<v-stepper-step
 				:complete="e1 > 1"
 				step="1"
+				color="#C76B6B"
 			>
 				Selección de Opciones
 			</v-stepper-step>
@@ -11,11 +12,12 @@
 			<v-stepper-step
 				:complete="e1 > 2"
 				step="2"
+				color="#C76B6B"
 			>
 				Llenar Datos
 			</v-stepper-step>
 			<v-divider></v-divider>
-			<v-stepper-step step="3"> Vista Previa </v-stepper-step>
+			<v-stepper-step step="3" color="#C76B6B"> Vista Previa </v-stepper-step>
 		</v-stepper-header>
 
 		<v-card>
@@ -45,12 +47,12 @@
 								
 								<div>
 									<v-btn
-										color="primary"
+										color="#C76B6B"
+										dark
 										@click="irAPaso2"
 										:disabled="!combinacionValida"
 										>Continuar</v-btn
 									>
-									<v-btn text>Cancelar</v-btn>
 								</div>
 							</v-row>
 
@@ -61,20 +63,23 @@
 								>
 									<v-timeline dense>
 										<v-timeline-item
-											color="primary"
+											color="#C76B6B"
 											small
 										>
 											<v-radio-group
 												v-model="ticket"
 												column
+												color="#C76B6B"
 											>
 												<v-radio
 													label="Reclamos"
 													value="1"
+													color="#C76B6B"
 												></v-radio>
 												<v-radio
 													label="Proactivo"
 													value="2"
+													color="#C76B6B"
 												></v-radio>
 											</v-radio-group>
 										</v-timeline-item>
@@ -86,18 +91,20 @@
 								>
 									<v-timeline dense>
 										<v-timeline-item
-											color="primary"
+											color="#C76B6B"
 											small
 										>
 											<v-radio-group
 												v-model="tipo"
 												column
+												color="#C76B6B"
 											>
 												<v-radio
 													v-for="tipoItem in tiposFiltrados"
 													:key="tipoItem.value"
 													:label="tipoItem.label"
 													:value="tipoItem.value"
+													color="#C76B6B"
 												></v-radio>
 											</v-radio-group>
 										</v-timeline-item>
@@ -110,33 +117,56 @@
 
 				<!-- STEP 2 -->
 				<v-stepper-content step="2">
-					<v-card class="pa-4 elevation-0 rounded">
-						<Form1
-							:cuismp.sync="cuismp"
-							:fechaInicio.sync="fechaInicio"
-							:horaInicio.sync="horaInicio"
-							:fechaFin.sync="fechaFin"
-							:horaFin.sync="horaFin"
-							:desplazamiento.sync="desplazamiento"
-							:tipoDesplazamiento.sync="tipoDesplazamiento"
-							:pronombre.sync="pronombre"
-							:nombre.sync="nombre"
-							:comunicacionCliente.sync="comunicacionCliente"
-							:problemaEncontrado.sync="problemaEncontrado"
-							:otroProblemaEncontrado.sync="otroProblemaEncontrado"
-							:correctivo.sync="correctivo"
-							:causaProblema.sync="causaProblema"
-							:otraCausaProblema.sync="otraCausaProblema"
-							:distanciaCorte.sync="distanciaCorte"
-							:ticket="ticket"
-							:tipo="tipo"
-						/>
-						<v-btn
-							color="primary"
-							@click="irAPaso3"
-							>Continuar</v-btn
-						>
-						<v-btn text>Cancelar</v-btn>
+					<v-card
+						class="pa-4 elevation-0"
+						flat
+					>
+						<v-container fluid>
+							<v-row
+								align="center"
+								justify="end"
+							>
+								<div>
+									<v-btn
+										text
+										@click="irAPaso1"
+										class="mr-2"
+										>Atrás</v-btn
+									>
+									<v-btn
+										color="#C76B6B"
+										dark
+										@click="irAPaso3"
+										>Continuar</v-btn
+									>
+								</div>
+							</v-row>
+
+							<v-row>
+								<v-col cols="12">
+									<Form1
+										:cuismp.sync="cuismp"
+										:fechaInicio.sync="fechaInicio"
+										:horaInicio.sync="horaInicio"
+										:fechaFin.sync="fechaFin"
+										:horaFin.sync="horaFin"
+										:desplazamiento.sync="desplazamiento"
+										:tipoDesplazamiento.sync="tipoDesplazamiento"
+										:pronombre.sync="pronombre"
+										:nombre.sync="nombre"
+										:comunicacionCliente.sync="comunicacionCliente"
+										:problemaEncontrado.sync="problemaEncontrado"
+										:otroProblemaEncontrado.sync="otroProblemaEncontrado"
+										:correctivo.sync="correctivo"
+										:causaProblema.sync="causaProblema"
+										:otraCausaProblema.sync="otraCausaProblema"
+										:distanciaCorte.sync="distanciaCorte"
+										:ticket="ticket"
+										:tipo="tipo"
+									/>
+								</v-col>
+							</v-row>
+						</v-container>
 					</v-card>
 				</v-stepper-content>
 
@@ -144,7 +174,7 @@
 				<v-stepper-content step="3">
 					<v-card class="pa-4 elevation-0 rounded grey lighten-4">
 						<v-toolbar
-							color="primary"
+							color="#C76B6B"
 							dark
 							flat
 						>
@@ -418,3 +448,44 @@
 		}
 	};
 </script>
+
+<style scoped>
+/* Stepper minimalista */
+.v-stepper {
+  background-color: white;
+  box-shadow: none;
+}
+
+.v-stepper__header {
+  border-bottom: 1px solid #f5f5f5;
+}
+
+/* Steps personalizados */
+.v-stepper__step--active .v-stepper__label {
+  color: #C76B6B;
+  font-weight: 600;
+}
+
+.v-stepper__step--complete .v-stepper__label {
+  color: #C76B6B;
+}
+
+/* Botones de texto */
+.v-btn--text:hover {
+  background-color: rgba(241, 167, 167, 0.1);
+  color: #C76B6B;
+}
+
+/* Títulos */
+h3 {
+  color: #C76B6B;
+  font-weight: 600;
+}
+
+/* Alertas */
+.v-alert.warning {
+  background-color: rgba(241, 167, 167, 0.1);
+  border-color: #F1A7A7;
+  color: #C76B6B;
+}
+</style>

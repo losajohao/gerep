@@ -1,13 +1,18 @@
 <template>
-  <v-container fluid fill-height>
+  <v-container fluid fill-height class="login-container">
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md4>
-        <v-card
-          class="pa-6"
+        <div class="text-center">
+          
+          <v-card
+          class="pa-6 login-card"
           elevation="8"
           style="border-radius: 16px;"
-        >
-          <v-card-title class="justify-center" style="font-size: 24px; font-weight: bold;">
+          >
+          <v-avatar class="mb-4" style="width: 100px; height: 100px;" >
+            <v-img src="../assets/gerepIcon.png" />
+          </v-avatar>
+          <v-card-title class="justify-center login-title" style="font-size: 24px; font-weight: bold;">
             Bienvenido
           </v-card-title>
 
@@ -32,21 +37,22 @@
 
             <v-btn
               :loading="loading"
-              color="black"
+              class="login-btn"
               dark
               block
               large
               rounded
               @click="handleLogin"
             >
-              Sign In
+              Ingresar
             </v-btn>
 
             <v-alert v-if="error" type="error" dense class="mt-3">
               {{ error }}
             </v-alert>
           </v-card-text>
-        </v-card>
+          </v-card>
+        </div>
       </v-flex>
     </v-layout>
   </v-container>
@@ -119,16 +125,67 @@ export default {
 </script>
 
 <style scoped>
-.v-card {
-  border-radius: 16px;
+/* Contenedor principal minimalista con fondo blanco */
+.login-container {
+  background-color: white !important;
+  min-height: 100vh;
 }
 
+/* Tarjeta de login blanca con sombra sutil */
+.login-card {
+  background-color: white !important;
+  border-radius: 16px;
+  border: 1px solid #f5f5f5;
+}
+
+/* Título con acento rosado sutil */
+.login-title {
+  color: #C76B6B !important;
+}
+
+/* Inputs minimalistas */
 .custom-input .v-input__control {
   border-radius: 12px;
 }
 
-.v-btn {
+.custom-input >>> .v-input__slot {
+  background-color: white !important;
+}
+
+.custom-input >>> .v-label {
+  color: #666 !important;
+}
+
+.custom-input >>> .v-input__slot fieldset {
+  border-color: #e0e0e0 !important;
+}
+
+.custom-input >>> .v-input--is-focused .v-input__slot fieldset {
+  border-color: #F1A7A7 !important;
+  border-width: 2px !important;
+}
+
+.custom-input >>> .v-input--is-focused .v-label {
+  color: #C76B6B !important;
+}
+
+/* Botón minimalista con acento rosado */
+.login-btn {
+  background-color: #C76B6B !important;
   font-weight: bold;
   font-size: 16px;
+  border: none !important;
+}
+
+.login-btn:hover {
+  background-color: #F1A7A7 !important;
+  color: #C76B6B !important;
+}
+
+/* Alert de error */
+.v-alert.error {
+  background-color: #ffebee !important;
+  color: #c62828 !important;
+  border-left: 4px solid #c62828 !important;
 }
 </style>

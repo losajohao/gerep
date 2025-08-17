@@ -109,7 +109,7 @@
 
 								<!-- Correctivo aplicado -->
 								<v-col
-									cols="4"
+									cols="8"
 									v-if="mostrarCampoCorrectivo"
 								>
 									<v-textarea

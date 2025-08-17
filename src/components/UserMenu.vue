@@ -13,7 +13,7 @@
         class="user-btn"
       >
         <v-avatar size="32">
-          <v-icon color="#1976d2">mdi-account-circle</v-icon>
+          <v-icon color="#C76B6B">mdi-account-circle</v-icon>
         </v-avatar>
       </v-btn>
     </template>
@@ -30,7 +30,7 @@
       <v-list-item @click="handleLogout">
         <v-list-item-title class="logout-title">Cerrar sesión</v-list-item-title>
         <v-list-item-icon>
-          <v-icon color="red">mdi-logout</v-icon>
+          <v-icon color="#C76B6B">mdi-logout</v-icon>
         </v-list-item-icon>
       </v-list-item>
     </v-list>
@@ -64,16 +64,52 @@ export default {
 </script>
 
 <style scoped>
+/* Botón de usuario minimalista */
 .user-btn {
   padding: 0;
 }
 
-.user-menu-list {
-  min-width: 150px;
+.user-btn:hover {
+  background-color: rgba(241, 167, 167, 0.1) !important;
 }
 
+/* Lista del menú con estilo minimalista */
+.user-menu-list {
+  min-width: 150px;
+  background-color: white !important;
+  border: 1px solid #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(199, 107, 107, 0.1) !important;
+}
+
+/* Items del menú */
+.user-menu-list .v-list-item {
+  color: #666 !important;
+  transition: all 0.2s ease;
+}
+
+.user-menu-list .v-list-item:hover {
+  background-color: rgba(241, 167, 167, 0.1) !important;
+  color: #C76B6B !important;
+}
+
+/* Título de cerrar sesión con paleta rosada */
 .logout-title {
-  color: red;
+  color: #C76B6B !important;
   font-weight: 500;
+}
+
+.user-menu-list .v-list-item:hover .logout-title {
+  color: #C76B6B !important;
+  font-weight: 600;
+}
+
+/* Avatar del usuario */
+.v-avatar {
+  transition: all 0.2s ease;
+}
+
+.user-btn:hover .v-avatar {
+  transform: scale(1.05);
 }
 </style>
