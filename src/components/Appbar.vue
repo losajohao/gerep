@@ -24,7 +24,7 @@
 
     <v-spacer></v-spacer>
 
-    <div class="d-flex align-center">
+    <div class="d-flex align-center" v-if="isAuthenticated">
       <v-chip
         class="mr-3 user-chip"
         small
@@ -47,6 +47,9 @@ export default {
     UserMenu
   },
   computed: {
+    isAuthenticated() {
+      return this.$store.getters['auth/isAuthenticated'];
+    },
     userName() {
       const user = this.$store.getters['auth/currentUser'];
       if (user && user.email) {
