@@ -1,10 +1,10 @@
 <template>
   <v-app>
-    <appbar v-if="isAuthenticated"/>
+    <appbar/>
     <v-main>
       <router-view/>
     </v-main>
-    <app-footer v-if="isAuthenticated"/>
+    <app-footer/>
   </v-app>
 </template>
 

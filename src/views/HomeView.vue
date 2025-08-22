@@ -232,6 +232,7 @@
 	import Speach8 from "../components/Speach8.vue";
 	import Speach9 from "../components/Speach9.vue";
 	import Form1 from "../components/Form1.vue";
+	import { useAuth } from '../composables/useAuth';
 
 	export default {
 		components: { Speach1, Speach2, Speach3, Speach4, Speach5, Speach6, Speach7, Speach8, Speach9, Form1 },
@@ -239,6 +240,12 @@
 			return {
 				// Ya no necesitamos el composable en data, trabajamos directamente con el store
 			};
+		},
+		
+		async mounted() {
+			// Asegurar que la autenticación esté inicializada
+			const { initializeAuth } = useAuth();
+			await initializeAuth();
 		},
 		
 		computed: {
