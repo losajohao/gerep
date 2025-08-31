@@ -29,8 +29,19 @@ const router = new VueRouter({
   routes
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const isInitialized = store.getters['auth/isAuthInitialized'];
+  
+  // Si Firebase Auth no se ha inicializado, esperar
+  if (!isInitialized) {
+    try {
+      await store.dispatch('auth/initializeAuthListener');
+    } catch (error) {
+      console.error('Error inicializando auth:', error);
+    }
+  }
+  
   const isAuthenticated = store.getters['auth/isAuthenticated'];
 
   if (requiresAuth && !isAuthenticated) {
