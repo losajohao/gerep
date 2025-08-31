@@ -34,6 +34,7 @@
               outlined
               hide-details
               class="custom-input mb-4"
+              @keyup.enter="handleEnterKey"
             ></v-text-field>
 
             <v-text-field
@@ -43,6 +44,7 @@
               outlined
               hide-details
               class="custom-input mb-4"
+              @keyup.enter="handleEnterKey"
             ></v-text-field>
 
             <v-btn
@@ -107,6 +109,13 @@ export default {
       
       if (success) {
         handleLoginSuccess(this);
+      }
+    },
+    
+    handleEnterKey() {
+      // Solo ejecutar login si no está cargando y hay datos
+      if (!this.loading && this.email.trim() && this.password.trim()) {
+        this.handleLogin();
       }
     }
   }

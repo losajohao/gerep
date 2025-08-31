@@ -1,9 +1,5 @@
 <template>
 	<div class="indicadores-container">
-		<div class="header-section">
-			<h1 class="page-title">Indicadores de Anexos</h1>
-		</div>
-
 		<v-container fluid>
 			<!-- Primera fila - Gráficos -->
 			<v-row>
