@@ -7,7 +7,7 @@
 						<span
 							class="text-h5"
 							style="color: #c76b6b"
-							>Registro de visitas</span
+							>Anexos / Registro de visitas</span
 						>
 						<div class="d-flex gap-2">
 							<v-btn
@@ -1294,36 +1294,9 @@
 				return true;
 			},
 
-			// Función específica para validar direcciones MAC
+			// Función para validar MAC (sin restricciones)
 			validarMAC(valor) {
-				if (!valor) return true;
-
-				// Permitir letras (A-F, a-f), números (0-9), guiones (-) y dos puntos (:)
-				const regex = /^[A-Fa-f0-9:-]+$/;
-
-				// Validar que solo contenga caracteres permitidos
-				if (!regex.test(valor)) {
-					return "MAC debe contener solo letras (A-F), números (0-9), guiones (-) y dos puntos (:)";
-				}
-
-				// Validar longitud máxima (17 caracteres para formato AA:BB:CC:DD:EE:FF o AA-BB-CC-DD-EE-FF)
-				if (valor.length > 17) {
-					return "MAC debe tener máximo 17 caracteres";
-				}
-
-				// Validar formatos comunes de MAC (opcional pero recomendado)
-				const formatosValidos = [
-					/^([A-Fa-f0-9]{2}[:-]){5}[A-Fa-f0-9]{2}$/, // AA:BB:CC:DD:EE:FF o AA-BB-CC-DD-EE-FF
-					/^[A-Fa-f0-9]{12}$/, // AABBCCDDEEFF (sin separadores)
-					/^([A-Fa-f0-9]{4}[:-]){2}[A-Fa-f0-9]{4}$/ // AAAA:BBBB:CCCC o AAAA-BBBB-CCCC
-				];
-
-				const esFormatoValido = formatosValidos.some(formato => formato.test(valor));
-				
-				if (!esFormatoValido) {
-					return "MAC debe tener un formato válido (ej: AA:BB:CC:DD:EE:FF, AA-BB-CC-DD-EE-FF o AABBCCDDEEFF)";
-				}
-
+				// Permitir cualquier entrada
 				return true;
 			},
 
@@ -1337,63 +1310,54 @@
 				this.exportando = true;
 
 				try {
-					// Preparar datos para exportación con textos legibles
+					// Preparar datos para exportación siguiendo el orden específico requerido
 					const datosParaExportar = this.visitasFiltradas.map((visita) => ({
-						"Distrito Fiscal": this.getTextoDistrito(visita.distritoFiscal),
+						TICKET: visita.ticket || "",
+						ANEXO: visita.anexo || "",
+						MODELO: this.getTextoModelo(visita.modelo),
+						CARGO: visita.cargo || "",
+						"NOMBRE DE PERSONAL": visita.nombrePersonal || "",
+						"estado (inicial)": visita.estadoInicial ? "Activo" : "Inactivo",
 						CID: visita.cid || "",
 						CUISMP: visita.cuismp || "",
-						Anexo: visita.anexo || "",
-						Modelo: this.getTextoModelo(visita.modelo),
+						SEDE: visita.sede || "",
 						MAC: visita.mac || "",
-						Serie: visita.serie || "",
-						Ticket: visita.ticket || "",
-						"Fecha Revisión": visita.fechaRevision || "",
-						Tipificación: this.getTextoTipificacion(visita.tipificacion),
-						Responsable: this.getTextoResponsable(visita.responsable),
-						"Nombre Personal": visita.nombrePersonal || "",
-						Sede: visita.sede || "",
-						Cargo: visita.cargo || "",
-						"Estado Inicial": visita.estadoInicial ? "Activo" : "Inactivo",
-						"Estado Final": visita.estadoFinal ? "Activo" : "Inactivo",
-						"Switch Claro": visita.switch ? "Sí" : "No",
-						"Cliente Conflicto": visita.clienteConflicto ? "Sí" : "No",
-						"Detalle Conflicto":
-							typeof visita.detalleClienteConflicto === "string"
-								? visita.detalleClienteConflicto
-								: visita.detalleClienteConflicto
-								? JSON.stringify(visita.detalleClienteConflicto)
-								: "",
-						Observaciones: visita.observaciones || "",
-						"Fecha Creación": this.formatearFechaCompleta(visita.fechaCreacion),
+						SERIE: visita.serie || "",
+						"FECHA DE REVISION": visita.fechaRevision || "",
+						MES: visita.fechaRevision ? new Date(visita.fechaRevision.split('/').reverse().join('-')).toLocaleDateString('es-ES', { month: 'long' }) : "",
+						DF: this.getTextoDistrito(visita.distritoFiscal),
+						"estado (final)": visita.estadoFinal ? "Activo" : "Inactivo",
+						"TIPIFICACIÓN / CÓMO SE ENCONTRÓ EL TELÉFONO": this.getTextoTipificacion(visita.tipificacion),
+						RESPONSABLE: this.getTextoResponsable(visita.responsable),
+						OBSERVACIÓN: visita.observaciones || "",
+						SWITCH: visita.switch ? "Sí" : "No"
 					}));
 
 					// Crear libro de trabajo
 					const wb = XLSX.utils.book_new();
 					const ws = XLSX.utils.json_to_sheet(datosParaExportar);
 
-					// Ajustar ancho de columnas
+					// Ajustar ancho de columnas según el orden específico
 					const colWidths = [
-						{ wch: 15 }, // Distrito Fiscal
+						{ wch: 12 }, // TICKET
+						{ wch: 8 },  // ANEXO
+						{ wch: 12 }, // MODELO
+						{ wch: 15 }, // CARGO
+						{ wch: 20 }, // NOMBRE DE PERSONAL
+						{ wch: 12 }, // estado (inicial)
 						{ wch: 12 }, // CID
-						{ wch: 8 }, // CUISMP
-						{ wch: 8 }, // Anexo
-						{ wch: 12 }, // Modelo
+						{ wch: 8 },  // CUISMP
+						{ wch: 20 }, // SEDE
 						{ wch: 15 }, // MAC
-						{ wch: 15 }, // Serie
-						{ wch: 12 }, // Ticket
-						{ wch: 12 }, // Fecha Revisión
-						{ wch: 20 }, // Tipificación
-						{ wch: 15 }, // Responsable
-						{ wch: 20 }, // Nombre Personal
-						{ wch: 20 }, // Sede
-						{ wch: 15 }, // Cargo
-						{ wch: 12 }, // Estado Inicial
-						{ wch: 12 }, // Estado Final
-						{ wch: 10 }, // Switch Claro
-						{ wch: 12 }, // Cliente Conflicto
-						{ wch: 30 }, // Detalle Conflicto
-						{ wch: 30 }, // Observaciones
-						{ wch: 18 }, // Fecha Creación
+						{ wch: 15 }, // SERIE
+						{ wch: 12 }, // FECHA DE REVISION
+						{ wch: 12 }, // MES
+						{ wch: 15 }, // DF
+						{ wch: 12 }, // estado (final)
+						{ wch: 30 }, // TIPIFICACIÓN / CÓMO SE ENCONTRÓ EL TELÉFONO
+						{ wch: 15 }, // RESPONSABLE
+						{ wch: 30 }, // OBSERVACIÓN
+						{ wch: 10 }  // SWITCH
 					];
 					ws["!cols"] = colWidths;
 
