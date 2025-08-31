@@ -93,29 +93,8 @@ export default {
     }
   },
   
-  async mounted() {
-    // Inicializar autenticación
-    const { initializeAuth } = useAuth();
-    const { setupAuthRedirect } = useAuthFlow();
-    
-    await initializeAuth();
-    setupAuthRedirect();
-    
-    // Configurar watcher para redirecciones automáticas
-    this.$watch(
-      () => this.$store.getters['auth/currentUser'],
-      (user) => {
-        if (user && this.$route.path === '/login') {
-          this.$router.push('/home').catch(err => {
-            if (err.name !== 'NavigationDuplicated') {
-              console.error('Error en navegación:', err);
-            }
-          });
-        }
-      },
-      { immediate: true }
-    );
-  },
+  // No necesitamos mounted() porque App.vue ya inicializa el auth listener
+  // y el router guard maneja las redirecciones
   
   methods: {
     async handleLogin() {
