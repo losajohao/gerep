@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
+import RegistroVisitasView from '@/views/RegistroVisitasView.vue';
 import store from '../store';
 
 Vue.use(VueRouter);
@@ -21,6 +22,12 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: LoginView
+  },
+  {
+    path: '/anexos/registros',
+    name: 'RegistroVisitas',
+    component: RegistroVisitasView,
+    meta: { requiresAuth: true }
   }
 ];
 

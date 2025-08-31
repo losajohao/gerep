@@ -1,50 +1,71 @@
 <template>
-  <v-app-bar
-    app
-    flat
-    color="white"
-    elevation="2"
-    class="custom-appbar"
-  >
-    <div class="d-flex align-center">
-      <v-badge
-        color="#C76B6B"
-        content="v1.0 Beta"
-        value="true"
-        overlap
-        offset-x="8"
-        offset-y="18"
-        class="version-badge"
+  <div>
+    <v-app-bar
+      app
+      flat
+      color="white"
+      elevation="2"
+      clipped-left
+      class="custom-appbar"
+    >
+      <!-- Icono hamburguesa -->
+      <v-app-bar-nav-icon
+        @click="toggleSidebar"
+        class="hamburger-icon"
       >
-        <v-avatar>
-          <v-img src="../assets/gerepIcon.png" />
-        </v-avatar>
-      </v-badge>
-    </div>
+        <v-icon color="#C76B6B">mdi-menu</v-icon>
+      </v-app-bar-nav-icon>
 
-    <v-spacer></v-spacer>
+      <div class="d-flex align-center ml-2">
+        <v-badge
+          color="#C76B6B"
+          content="v1.0 Beta"
+          value="true"
+          overlap
+          offset-x="8"
+          offset-y="18"
+          class="version-badge"
+        >
+          <v-avatar>
+            <v-img src="../assets/gerepIcon.png" />
+          </v-avatar>
+        </v-badge>
+      </div>
 
-    <div class="d-flex align-center">
-      <v-chip
-        class="mr-3 user-chip"
-        small
-        outlined
-      >
-        <v-icon left small>mdi-account</v-icon>
-        {{ userName }}
-      </v-chip>
-      <UserMenu/>
-    </div>
-  </v-app-bar>
+      <v-spacer></v-spacer>
+
+      <div class="d-flex align-center">
+        <v-chip
+          class="mr-3 user-chip"
+          small
+          outlined
+        >
+          <v-icon left small>mdi-account</v-icon>
+          {{ userName }}
+        </v-chip>
+        <UserMenu/>
+      </div>
+    </v-app-bar>
+    
+    <!-- Sidebar component solo si está autenticado -->
+    <Sidebar v-if="isAuthenticated" v-model="sidebarOpen" />
+  </div>
 </template>
 
 <script>
 import UserMenu from './UserMenu.vue';
+import Sidebar from './Sidebar.vue';
 
 export default {
   name: 'Appbar',
   components: {
-    UserMenu
+    UserMenu,
+    Sidebar
+  },
+  data() {
+    return {
+      sidebarOpen: false
+    };
   },
   computed: {
     isAuthenticated() {
@@ -58,6 +79,12 @@ export default {
       }
       return 'Usuario';
     }
+  },
+  methods: {
+    toggleSidebar() {
+      this.sidebarOpen = !this.sidebarOpen;
+      console.log('Sidebar toggled:', this.sidebarOpen);
+    }
   }
 }
 </script>
@@ -67,6 +94,16 @@ export default {
 .custom-appbar {
   border-bottom: 1px solid #f5f5f5 !important;
   background-color: white !important;
+}
+
+/* Icono hamburguesa */
+.hamburger-icon {
+  transition: all 0.2s ease;
+}
+
+.hamburger-icon:hover {
+  background-color: rgba(241, 167, 167, 0.1) !important;
+  transform: scale(1.05);
 }
 
 .appbar-title {
