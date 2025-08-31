@@ -7,16 +7,14 @@ export default {
   state: {
     user: null,
     loading: false,
-    error: null,
-    isInitialized: false
+    error: null
   },
   
   getters: {
     isAuthenticated: state => !!state.user,
     currentUser: state => state.user,
     isLoading: state => state.loading,
-    authError: state => state.error,
-    isAuthInitialized: state => state.isInitialized
+    authError: state => state.error
   },
   
   mutations: {
@@ -32,10 +30,6 @@ export default {
       state.error = error
     },
     
-    SET_INITIALIZED(state, initialized) {
-      state.isInitialized = initialized
-    },
-    
     CLEAR_ERROR(state) {
       state.error = null
     }
@@ -47,7 +41,6 @@ export default {
       return new Promise((resolve) => {
         onAuthStateChanged(auth, (user) => {
           commit('SET_USER', user)
-          commit('SET_INITIALIZED', true)
           resolve(user)
         })
       })

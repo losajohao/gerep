@@ -16,9 +16,6 @@ export function useAuth() {
     get error() {
       return { value: store.getters['auth/authError'] };
     },
-    get isInitialized() {
-      return { value: store.getters['auth/isAuthInitialized'] };
-    },
     
     // Métodos
     initializeAuth() {

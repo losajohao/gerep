@@ -32,24 +32,11 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const isAuthenticated = store.getters['auth/isAuthenticated'];
-  const isInitialized = store.getters['auth/isAuthInitialized'];
-
-  // Si no está inicializado, permitir la navegación
-  // El composable useAuthFlow manejará la redirección apropiada
-  if (!isInitialized) {
-    next();
-    return;
-  }
 
   if (requiresAuth && !isAuthenticated) {
     next('/login');
   } else if (to.path === '/login' && isAuthenticated) {
-    // Evitar navegación redundante a login si ya está autenticado
-    if (from.path !== '/home') {
-      next('/home');
-    } else {
-      next(false); // cancela navegación redundante
-    }
+    next('/home');
   } else {
     next();
   }

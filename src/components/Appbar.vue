@@ -24,7 +24,7 @@
 
     <v-spacer></v-spacer>
 
-    <div class="d-flex align-center" v-if="isAuthenticated && isAuthInitialized">
+    <div class="d-flex align-center">
       <v-chip
         class="mr-3 user-chip"
         small
@@ -34,16 +34,6 @@
         {{ userName }}
       </v-chip>
       <UserMenu/>
-    </div>
-    
-    <!-- Mostrar loading mientras se inicializa la autenticación -->
-    <div class="d-flex align-center" v-else-if="!isAuthInitialized">
-      <v-progress-circular
-        indeterminate
-        size="24"
-        width="2"
-        color="#C76B6B"
-      ></v-progress-circular>
     </div>
   </v-app-bar>
 </template>
@@ -59,9 +49,6 @@ export default {
   computed: {
     isAuthenticated() {
       return this.$store.getters['auth/isAuthenticated'];
-    },
-    isAuthInitialized() {
-      return this.$store.getters['auth/isAuthInitialized'];
     },
     userName() {
       const user = this.$store.getters['auth/currentUser'];
