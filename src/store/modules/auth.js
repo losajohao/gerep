@@ -7,14 +7,16 @@ export default {
   state: {
     user: null,
     loading: false,
-    error: null
+    error: null,
+    isInitialized: false
   },
   
   getters: {
     isAuthenticated: state => !!state.user,
     currentUser: state => state.user,
     isLoading: state => state.loading,
-    authError: state => state.error
+    authError: state => state.error,
+    isAuthInitialized: state => state.isInitialized
   },
   
   mutations: {
@@ -32,17 +34,31 @@ export default {
     
     CLEAR_ERROR(state) {
       state.error = null
+    },
+    
+    SET_INITIALIZED(state, initialized) {
+      state.isInitialized = initialized
     }
   },
   
   actions: {
     // Inicializar listener de autenticación
-    initializeAuthListener({ commit }) {
+    initializeAuthListener({ commit, state }) {
+      // Si ya está inicializado, no crear otro listener
+      if (state.isInitialized) {
+        return Promise.resolve(state.user);
+      }
+      
       return new Promise((resolve) => {
-        onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
           commit('SET_USER', user)
+          commit('SET_INITIALIZED', true)
           resolve(user)
+          // No desuscribirse aquí, queremos mantener el listener activo
         })
+        
+        // Guardar el unsubscribe para limpieza posterior si es necesario
+        // En este caso lo mantenemos activo durante toda la app
       })
     },
     
