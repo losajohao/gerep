@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import RegistroVisitasView from '@/views/RegistroVisitasView.vue';
+import IndicadoresView from '@/views/IndicadoresView.vue';
 import store from '../store';
 
 Vue.use(VueRouter);
@@ -27,6 +28,12 @@ const routes = [
     path: '/anexos/registros',
     name: 'RegistroVisitas',
     component: RegistroVisitasView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/anexos/indicadores',
+    name: 'Indicadores',
+    component: IndicadoresView,
     meta: { requiresAuth: true }
   }
 ];

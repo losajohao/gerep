@@ -11,13 +11,15 @@
 						>
 						<div class="d-flex gap-2">
 							<v-btn
-								icon
-								color="#C76B6B"
-								@click="refrescarVisitas"
-								:loading="loading"
-								title="Refrescar lista"
+								color="#217346"
+								dark
+								@click="exportarAExcel"
+								:disabled="visitasFiltradas.length === 0 || exportando"
+								:loading="exportando"
+								class="export-btn"
 							>
-								<v-icon>mdi-refresh</v-icon>
+								<v-icon left>mdi-file-excel</v-icon>
+								Exportar Excel
 							</v-btn>
 							<v-btn
 								color="#C76B6B"
@@ -31,29 +33,16 @@
 					</v-card-title>
 
 					<!-- Filtros -->
-					<v-card-text>
+					<v-card-text class="filtros-section">
 						<v-row>
 							<v-col
 								cols="12"
-								md="2"
-							>
-								<v-text-field
-									v-model="filtro.nombre"
-									label="Buscar por personal"
-									prepend-inner-icon="mdi-magnify"
-									outlined
-									dense
-									clearable
-								></v-text-field>
-							</v-col>
-							<v-col
-								cols="12"
-								md="4"
+								md="3"
 							>
 								<v-select
-									v-model="filtro.estado"
-									:items="estadosVisita"
-									label="Filtrar por estado"
+									v-model="filtro.distritoFiscal"
+									:items="distritosFiscales"
+									label="Filtrar por distrito fiscal"
 									outlined
 									dense
 									clearable
@@ -61,17 +50,57 @@
 							</v-col>
 							<v-col
 								cols="12"
-								md="4"
+								md="3"
+							>
+								<v-select
+									v-model="filtro.responsable"
+									:items="responsables"
+									label="Filtrar por responsable"
+									outlined
+									dense
+									clearable
+								></v-select>
+							</v-col>
+							<v-col
+								cols="12"
+								md="2"
+							>
+								<v-select
+									v-model="filtro.modelo"
+									:items="modelos"
+									label="Filtrar por modelo"
+									outlined
+									dense
+									clearable
+								></v-select>
+							</v-col>
+							<v-col
+								cols="12"
+								md="2"
+							>
+								<v-text-field
+									v-model="filtro.anexo"
+									label="Filtrar por anexo"
+									outlined
+									dense
+									clearable
+								></v-text-field>
+							</v-col>
+							
+							<v-col
+								cols="12"
+								md="2"
 							>
 								<v-text-field
 									v-model="filtro.fecha"
-									label="Filtrar por fecha revisión"
+									label="Filtrar por fecha"
 									type="date"
 									outlined
 									dense
 									clearable
 								></v-text-field>
 							</v-col>
+							
 						</v-row>
 					</v-card-text>
 
@@ -123,38 +152,56 @@
 							{{ getTextoResponsable(item.responsable) }}
 						</template>
 
-						            <template v-slot:item.nombrePersonal="{ item }">
-              {{ item.nombrePersonal }}
-            </template>
+						<template v-slot:item.nombrePersonal="{ item }">
+							{{ item.nombrePersonal }}
+						</template>
 
-            <template v-slot:item.switch="{ item }">
-              <v-chip
-                :color="item.switch ? 'success' : 'error'"
-                text-color="white"
-                small
-              >
-                {{ item.switch ? 'Sí' : 'No' }}
-              </v-chip>
-            </template>
+						<template v-slot:item.switch="{ item }">
+							<v-chip
+								:color="item.switch ? 'success' : 'error'"
+								text-color="white"
+								small
+							>
+								{{ item.switch ? "Sí" : "No" }}
+							</v-chip>
+						</template>
 
-            <template v-slot:item.clienteConflicto="{ item }">
-              <v-chip
-                :color="item.clienteConflicto ? 'error' : 'success'"
-                text-color="white"
-                small
-              >
-                {{ item.clienteConflicto ? 'Sí' : 'No' }}
-              </v-chip>
-            </template>
+						<template v-slot:item.clienteConflicto="{ item }">
+							<v-chip
+								:color="item.clienteConflicto ? 'error' : 'success'"
+								text-color="white"
+								small
+							>
+								{{ item.clienteConflicto ? "Sí" : "No" }}
+							</v-chip>
+						</template>
 
-            <template v-slot:item.detalleClienteConflicto="{ item }">
-              <span v-if="item.detalleClienteConflicto" class="text-body-2">
-                {{ item.detalleClienteConflicto }}
-              </span>
-              <span v-else class="text-caption grey--text">
-                Sin detalle
-              </span>
-            </template>
+						<template v-slot:item.detalleClienteConflicto="{ item }">
+							<span
+								v-if="
+									item.detalleClienteConflicto &&
+									typeof item.detalleClienteConflicto === 'string'
+								"
+								class="text-body-2"
+							>
+								{{ item.detalleClienteConflicto }}
+							</span>
+							<span
+								v-else-if="
+									item.detalleClienteConflicto &&
+									typeof item.detalleClienteConflicto === 'object'
+								"
+								class="text-body-2"
+							>
+								{{ JSON.stringify(item.detalleClienteConflicto) }}
+							</span>
+							<span
+								v-else
+								class="text-caption grey--text"
+							>
+								Sin detalle
+							</span>
+						</template>
 
 						<template v-slot:item.acciones="{ item }">
 							<v-tooltip bottom>
@@ -172,7 +219,7 @@
 								</template>
 								<span>Editar visita</span>
 							</v-tooltip>
-							
+
 							<v-tooltip bottom>
 								<template v-slot:activator="{ on, attrs }">
 									<v-btn
@@ -312,8 +359,8 @@
 									:rules="[reglas.mac]"
 									outlined
 									dense
-									maxlength="12"
-									placeholder="50CD22043040"
+									maxlength="17"
+									placeholder="AA:BB:CC:DD:EE:FF"
 								></v-text-field>
 							</v-col>
 							<v-col
@@ -371,7 +418,7 @@
 									dense
 								></v-select>
 							</v-col>
-              <v-col
+							<v-col
 								cols="12"
 								md="2"
 							>
@@ -383,7 +430,7 @@
 									dense
 								></v-select>
 							</v-col>
-              <v-col
+							<v-col
 								cols="12"
 								md="6"
 							>
@@ -395,7 +442,7 @@
 									dense
 								></v-text-field>
 							</v-col>
-              <v-col
+							<v-col
 								cols="12"
 								md="6"
 							>
@@ -459,11 +506,8 @@
 
 							<!-- Fila 5: Campos adicionales -->
 
-							
-							
-
 							<!-- Fila 6: Otros campos -->
-							
+
 							<v-col
 								cols="12"
 								md="6"
@@ -478,8 +522,11 @@
 										dense
 										class="mr-2"
 									></v-switch>
-									<span class="text-body-2" :class="visitaForm.switch ? 'success--text' : 'error--text'">
-										{{ visitaForm.switch ? 'Sí' : 'No' }}
+									<span
+										class="text-body-2"
+										:class="visitaForm.switch ? 'success--text' : 'error--text'"
+									>
+										{{ visitaForm.switch ? "Sí" : "No" }}
 									</span>
 								</div>
 							</v-col>
@@ -487,7 +534,10 @@
 								cols="12"
 								md="6"
 							>
-								<v-label class="mb-2">¿Hay equipos del cliente que hacen conflicto con equipos de Claro?</v-label>
+								<v-label class="mb-2"
+									>¿Hay equipos del cliente que hacen conflicto con equipos de
+									Claro?</v-label
+								>
 								<div class="d-flex align-center">
 									<v-switch
 										v-model="visitaForm.clienteConflicto"
@@ -497,8 +547,15 @@
 										dense
 										class="mr-2"
 									></v-switch>
-									<span class="text-body-2" :class="visitaForm.clienteConflicto ? 'success--text' : 'error--text'">
-										{{ visitaForm.clienteConflicto ? 'Sí' : 'No' }}
+									<span
+										class="text-body-2"
+										:class="
+											visitaForm.clienteConflicto
+												? 'success--text'
+												: 'error--text'
+										"
+									>
+										{{ visitaForm.clienteConflicto ? "Sí" : "No" }}
 									</span>
 								</div>
 							</v-col>
@@ -560,7 +617,11 @@
 		>
 			<v-card>
 				<v-card-title class="text-h6 red--text">
-					<v-icon color="red" class="mr-2">mdi-alert-circle</v-icon>
+					<v-icon
+						color="red"
+						class="mr-2"
+						>mdi-alert-circle</v-icon
+					>
 					Confirmar eliminación
 				</v-card-title>
 				<v-card-text>
@@ -570,17 +631,30 @@
 					<div class="mb-2">
 						¿Estás seguro de que deseas eliminar esta visita ?
 					</div>
-					<v-card 
-						v-if="visitaAEliminar" 
-						outlined 
+					<v-card
+						v-if="visitaAEliminar"
+						outlined
 						class="pa-3 grey lighten-5"
 					>
 						<div class="text-body-2">
-							<div><strong>Ticket:</strong> {{ visitaAEliminar.ticket || 'N/A' }}</div>
-							<div><strong>Anexo:</strong> {{ visitaAEliminar.anexo || 'N/A' }}</div>
-							<div><strong>Personal:</strong> {{ visitaAEliminar.nombrePersonal || 'N/A' }}</div>
-							<div><strong>Distrito:</strong> {{ getTextoDistrito(visitaAEliminar.distritoFiscal) }}</div>
-							<div><strong>Fecha:</strong> {{ visitaAEliminar.fechaRevision || 'N/A' }}</div>
+							<div>
+								<strong>Ticket:</strong> {{ visitaAEliminar.ticket || "N/A" }}
+							</div>
+							<div>
+								<strong>Anexo:</strong> {{ visitaAEliminar.anexo || "N/A" }}
+							</div>
+							<div>
+								<strong>Personal:</strong>
+								{{ visitaAEliminar.nombrePersonal || "N/A" }}
+							</div>
+							<div>
+								<strong>Distrito:</strong>
+								{{ getTextoDistrito(visitaAEliminar.distritoFiscal) }}
+							</div>
+							<div>
+								<strong>Fecha:</strong>
+								{{ visitaAEliminar.fechaRevision || "N/A" }}
+							</div>
 						</div>
 					</v-card>
 				</v-card-text>
@@ -632,14 +706,16 @@
 	import { RESPONSABLES } from "@/constants/responsables";
 	import { MODELOS } from "@/constants/modelos";
 	import VisitasService from "@/services/visitasService";
+	import * as XLSX from "xlsx";
 
 	export default {
 		name: "RegistroVisitasView",
-					data() {
+		data() {
 			return {
 				loading: true,
 				guardando: false,
 				eliminando: false,
+				exportando: false,
 				dialogo: false,
 				dialogoEliminar: false,
 				editando: false,
@@ -648,9 +724,11 @@
 
 				// Filtros
 				filtro: {
-					nombre: "",
-					estado: "",
 					fecha: "",
+					distritoFiscal: "",
+					anexo: "",
+					modelo: "",
+					responsable: "",
 				},
 
 				// Headers de la tabla
@@ -678,23 +756,29 @@
 						sortable: true,
 						width: "120px",
 					},
-									{ text: "Switch Claro", value: "switch", sortable: true, width: "100px" },
-				{ text: "Cliente Conflicto", value: "clienteConflicto", sortable: true, width: "120px" },
-				{ text: "Detalle Conflicto", value: "detalleClienteConflicto", sortable: true },
-				{
-					text: "Acciones",
-					value: "acciones",
-					sortable: false,
-					width: "120px",
-				},
-				],
-
-				// Estados disponibles
-				estadosVisita: [
-					{ text: "Activo", value: "activo" },
-					{ text: "Inactivo", value: "inactivo" },
-					{ text: "En revisión", value: "en_revision" },
-					{ text: "Mantenimiento", value: "mantenimiento" },
+					{
+						text: "Switch Claro",
+						value: "switch",
+						sortable: true,
+						width: "100px",
+					},
+					{
+						text: "Cliente Conflicto",
+						value: "clienteConflicto",
+						sortable: true,
+						width: "120px",
+					},
+					{
+						text: "Detalle Conflicto",
+						value: "detalleClienteConflicto",
+						sortable: true,
+					},
+					{
+						text: "Acciones",
+						value: "acciones",
+						sortable: false,
+						width: "120px",
+					},
 				],
 
 				// Distritos fiscales
@@ -734,7 +818,7 @@
 					detalleClienteConflicto: "",
 				},
 
-								// Datos de registros desde Firebase
+				// Datos de registros desde Firebase
 				visitas: [],
 
 				// Snackbar
@@ -754,7 +838,7 @@
 					cuismp: (v) => this.validarSoloNumeros(v, 5, "CUISMP"),
 					anexo: (v) => this.validarSoloNumeros(v, 5, "Anexo"),
 					ticket: (v) => this.validarSoloNumeros(v, 10, "Ticket"),
-					mac: (v) => this.validarAlfanumerico(v, 12, "MAC", "[A-Za-z0-9]"),
+					mac: (v) => this.validarMAC(v),
 					serie: (v) => this.validarAlfanumerico(v, 12, "Serie", "[A-Za-z0-9]"),
 					fecha: (v) => this.validarFormatoFecha(v),
 					soloLetras: (v) => this.validarSoloLetras(v),
@@ -770,20 +854,56 @@
 
 		computed: {
 			visitasFiltradas() {
-				return this.visitas.filter((visita) => {
-					const coincideNombre =
-						!this.filtro.nombre ||
-						visita.nombrePersonal
-							.toLowerCase()
-							.includes(this.filtro.nombre.toLowerCase());
-					const coincideEstado =
-						!this.filtro.estado ||
-						visita.estadoInicial === this.filtro.estado ||
-						visita.estadoFinal === this.filtro.estado;
-					const coincideFecha =
-						!this.filtro.fecha || visita.fechaRevision === this.filtro.fecha;
+				const visitasFiltradas = this.visitas.filter((visita) => {
+					// Filtro por fecha de revisión
+					const coincideFecha = !this.filtro.fecha || (() => {
+						if (!visita.fechaRevision) return false;
+						
+						// Convertir fecha del filtro (YYYY-MM-DD) a formato DD/MM/YYYY
+						const fechaFiltro = this.filtro.fecha;
+						const [año, mes, dia] = fechaFiltro.split('-');
+						const fechaFormateada = `${dia}/${mes}/${año}`;
+						
+						return visita.fechaRevision === fechaFormateada;
+					})();
 
-					return coincideNombre && coincideEstado && coincideFecha;
+					// Filtro por distrito fiscal
+					const coincideDistrito =
+						!this.filtro.distritoFiscal ||
+						visita.distritoFiscal === this.filtro.distritoFiscal;
+
+					// Filtro por anexo
+					const coincideAnexo =
+						!this.filtro.anexo ||
+						(visita.anexo && 
+						visita.anexo.toLowerCase().includes(this.filtro.anexo.toLowerCase()));
+
+					// Filtro por modelo
+					const coincideModelo =
+						!this.filtro.modelo ||
+						visita.modelo === this.filtro.modelo;
+
+					// Filtro por responsable
+					const coincideResponsable =
+						!this.filtro.responsable ||
+						visita.responsable === this.filtro.responsable;
+
+					return (
+						coincideFecha &&
+						coincideDistrito &&
+						coincideAnexo &&
+						coincideModelo &&
+						coincideResponsable
+					);
+				});
+
+				// Ordenar por fecha de creación descendente (más reciente primero)
+				return visitasFiltradas.sort((a, b) => {
+					const fechaA =
+						a.fechaCreacion?.toDate?.() || new Date(a.fechaCreacion || 0);
+					const fechaB =
+						b.fechaCreacion?.toDate?.() || new Date(b.fechaCreacion || 0);
+					return fechaB - fechaA;
 				});
 			},
 		},
@@ -793,15 +913,15 @@
 				if (visita) {
 					this.editando = true;
 					// Crear una copia profunda para evitar mutaciones accidentales
-					this.visitaForm = { 
+					this.visitaForm = {
 						...visita,
 						// Asegurar que los campos booleanos tengan valores correctos
 						estadoInicial: Boolean(visita.estadoInicial),
 						estadoFinal: Boolean(visita.estadoFinal),
 						switch: Boolean(visita.switch),
-						clienteConflicto: Boolean(visita.clienteConflicto)
+						clienteConflicto: Boolean(visita.clienteConflicto),
 					};
-					console.log('Editando visita:', this.visitaForm);
+					console.log("Editando visita:", this.visitaForm);
 				} else {
 					this.editando = false;
 					this.resetearFormulario();
@@ -847,28 +967,23 @@
 				this.loading = true;
 				try {
 					// Debug: verificar estado de autenticación
-					console.log('Estado de autenticación:', this.$store.getters['auth/isAuthenticated']);
-					console.log('Usuario actual:', this.$store.getters['auth/currentUser']);
-					
+					console.log(
+						"Estado de autenticación:",
+						this.$store.getters["auth/isAuthenticated"]
+					);
+					console.log(
+						"Usuario actual:",
+						this.$store.getters["auth/currentUser"]
+					);
+
 					this.visitas = await VisitasService.obtenerVisitas();
 					console.log(`✅ Cargadas ${this.visitas.length} visitas`);
 				} catch (error) {
-					console.error('Error cargando visitas:', error);
-					this.mostrarSnackbar(error.message || 'Error al cargar las visitas', 'error');
-				} finally {
-					this.loading = false;
-				}
-			},
-
-			async refrescarVisitas() {
-				try {
-					this.loading = true;
-					this.visitas = await VisitasService.obtenerVisitas();
-					console.log('🔄 Visitas refrescadas');
-					this.mostrarSnackbar('📋 Lista actualizada', 'info');
-				} catch (error) {
-					console.error('Error refrescando visitas:', error);
-					this.mostrarSnackbar('❌ Error al refrescar la lista', 'error');
+					console.error("Error cargando visitas:", error);
+					this.mostrarSnackbar(
+						error.message || "Error al cargar las visitas",
+						"error"
+					);
 				} finally {
 					this.loading = false;
 				}
@@ -883,53 +998,71 @@
 					if (this.editando) {
 						// Validar que el ID esté presente para la actualización
 						if (!this.visitaForm.id) {
-							throw new Error('Error: ID de visita no encontrado para actualización');
+							throw new Error(
+								"Error: ID de visita no encontrado para actualización"
+							);
 						}
-						
+
 						// Actualizar visita existente
-						console.log('Iniciando actualización de visita ID:', this.visitaForm.id);
-						
+						console.log(
+							"Iniciando actualización de visita ID:",
+							this.visitaForm.id
+						);
+
 						const visitaActualizada = await VisitasService.actualizarVisita(
 							this.visitaForm.id,
 							this.visitaForm
 						);
-						
+
 						// Actualizar en la lista local
 						const index = this.visitas.findIndex(
 							(v) => v.id === this.visitaForm.id
 						);
 						if (index !== -1) {
 							this.visitas.splice(index, 1, visitaActualizada);
-							console.log('Visita actualizada en la lista local');
+							console.log("Visita actualizada en la lista local");
 						} else {
-							console.warn('No se encontró la visita en la lista local para actualizar');
+							console.warn(
+								"No se encontró la visita en la lista local para actualizar"
+							);
 							// Recargar todas las visitas si no se encuentra
 							await this.cargarVisitas();
 						}
-						
-						this.mostrarSnackbar("✅ Visita actualizada correctamente", "success");
+
+						this.mostrarSnackbar(
+							"✅ Visita actualizada correctamente",
+							"success"
+						);
 					} else {
 						// Crear nueva visita
-						const nuevaVisita = await VisitasService.crearVisita(this.visitaForm);
+						const nuevaVisita = await VisitasService.crearVisita(
+							this.visitaForm
+						);
 						this.visitas.unshift(nuevaVisita); // Agregar al inicio
 						this.mostrarSnackbar("Visita creada correctamente", "success");
 					}
 
 					this.cerrarDialogo();
 				} catch (error) {
-					console.error('Error guardando visita:', error);
-					this.mostrarSnackbar(error.message || "Error al guardar la visita", "error");
+					console.error("Error guardando visita:", error);
+					this.mostrarSnackbar(
+						error.message || "Error al guardar la visita",
+						"error"
+					);
 				} finally {
 					this.guardando = false;
 				}
 			},
 
 			async confirmarEliminar(visita) {
-				console.log('Confirmando eliminación de visita:', visita);
-				
+				console.log("Confirmando eliminación de visita:", visita);
+
 				// Verificar que la visita tenga un ID válido
 				if (!visita || !visita.id) {
-					this.mostrarSnackbar("❌ Error: No se puede eliminar esta visita", "error");
+					this.mostrarSnackbar(
+						"❌ Error: No se puede eliminar esta visita",
+						"error"
+					);
 					return;
 				}
 
@@ -939,15 +1072,18 @@
 					this.visitaAEliminar = visita;
 					this.dialogoEliminar = true;
 				} catch (error) {
-					console.error('Error verificando visita:', error);
-					this.mostrarSnackbar("⚠️ La visita ya no existe o no se puede acceder a ella", "warning");
+					console.error("Error verificando visita:", error);
+					this.mostrarSnackbar(
+						"⚠️ La visita ya no existe o no se puede acceder a ella",
+						"warning"
+					);
 					// Refrescar la lista para sincronizar
 					await this.refrescarVisitas();
 				}
 			},
 
 			cancelarEliminacion() {
-				console.log('Cancelando eliminación');
+				console.log("Cancelando eliminación");
 				this.dialogoEliminar = false;
 				this.visitaAEliminar = null;
 				this.eliminando = false;
@@ -955,56 +1091,75 @@
 
 			async eliminarVisita() {
 				if (!this.visitaAEliminar || !this.visitaAEliminar.id) {
-					this.mostrarSnackbar("❌ Error: No se puede eliminar la visita", "error");
+					this.mostrarSnackbar(
+						"❌ Error: No se puede eliminar la visita",
+						"error"
+					);
 					return;
 				}
 
 				this.eliminando = true;
 				const visitaId = this.visitaAEliminar.id;
-				const visitaInfo = `${this.visitaAEliminar.ticket || 'N/A'} - ${this.visitaAEliminar.nombrePersonal || 'N/A'}`;
-				
-				console.log('Iniciando eliminación de visita ID:', visitaId);
+				const visitaInfo = `${this.visitaAEliminar.ticket || "N/A"} - ${
+					this.visitaAEliminar.nombrePersonal || "N/A"
+				}`;
+
+				console.log("Iniciando eliminación de visita ID:", visitaId);
 
 				try {
 					// Verificar una vez más que la visita existe antes de eliminar
 					await VisitasService.obtenerVisitaPorId(visitaId);
-					
+
 					// Proceder con la eliminación
 					await VisitasService.eliminarVisita(visitaId);
 
 					// Remover de la lista local
 					const index = this.visitas.findIndex((v) => v.id === visitaId);
-					
+
 					if (index !== -1) {
 						this.visitas.splice(index, 1);
-						console.log('✅ Visita removida de la lista local');
+						console.log("✅ Visita removida de la lista local");
 					} else {
-						console.warn('⚠️ Visita no encontrada en la lista local, refrescando...');
+						console.warn(
+							"⚠️ Visita no encontrada en la lista local, refrescando..."
+						);
 						// Si no se encuentra, recargar la lista completa sin mostrar loading
 						try {
 							this.visitas = await VisitasService.obtenerVisitas();
 						} catch (refreshError) {
-							console.error('Error refrescando después de eliminar:', refreshError);
+							console.error(
+								"Error refrescando después de eliminar:",
+								refreshError
+							);
 						}
 					}
 
 					this.mostrarSnackbar(`🗑️ Visita eliminada: ${visitaInfo}`, "success");
 					this.cancelarEliminacion();
 				} catch (error) {
-					console.error('Error eliminando visita:', error);
-					
+					console.error("Error eliminando visita:", error);
+
 					// Si la visita ya no existe, removerla de la lista local
-					if (error.message.includes('no existe') || error.message.includes('not-found')) {
+					if (
+						error.message.includes("no existe") ||
+						error.message.includes("not-found")
+					) {
 						const index = this.visitas.findIndex((v) => v.id === visitaId);
 						if (index !== -1) {
 							this.visitas.splice(index, 1);
-							this.mostrarSnackbar("📄 La visita ya había sido eliminada", "info");
+							this.mostrarSnackbar(
+								"📄 La visita ya había sido eliminada",
+								"info"
+							);
 							this.cancelarEliminacion();
 							return;
 						}
 					}
-					
-					this.mostrarSnackbar(error.message || "❌ Error al eliminar la visita", "error");
+
+					this.mostrarSnackbar(
+						error.message || "❌ Error al eliminar la visita",
+						"error"
+					);
 				} finally {
 					this.eliminando = false;
 				}
@@ -1138,6 +1293,159 @@
 
 				return true;
 			},
+
+			// Función específica para validar direcciones MAC
+			validarMAC(valor) {
+				if (!valor) return true;
+
+				// Permitir letras (A-F, a-f), números (0-9), guiones (-) y dos puntos (:)
+				const regex = /^[A-Fa-f0-9:-]+$/;
+
+				// Validar que solo contenga caracteres permitidos
+				if (!regex.test(valor)) {
+					return "MAC debe contener solo letras (A-F), números (0-9), guiones (-) y dos puntos (:)";
+				}
+
+				// Validar longitud máxima (17 caracteres para formato AA:BB:CC:DD:EE:FF o AA-BB-CC-DD-EE-FF)
+				if (valor.length > 17) {
+					return "MAC debe tener máximo 17 caracteres";
+				}
+
+				// Validar formatos comunes de MAC (opcional pero recomendado)
+				const formatosValidos = [
+					/^([A-Fa-f0-9]{2}[:-]){5}[A-Fa-f0-9]{2}$/, // AA:BB:CC:DD:EE:FF o AA-BB-CC-DD-EE-FF
+					/^[A-Fa-f0-9]{12}$/, // AABBCCDDEEFF (sin separadores)
+					/^([A-Fa-f0-9]{4}[:-]){2}[A-Fa-f0-9]{4}$/ // AAAA:BBBB:CCCC o AAAA-BBBB-CCCC
+				];
+
+				const esFormatoValido = formatosValidos.some(formato => formato.test(valor));
+				
+				if (!esFormatoValido) {
+					return "MAC debe tener un formato válido (ej: AA:BB:CC:DD:EE:FF, AA-BB-CC-DD-EE-FF o AABBCCDDEEFF)";
+				}
+
+				return true;
+			},
+
+			// Función para exportar a Excel
+			async exportarAExcel() {
+				if (this.visitasFiltradas.length === 0) {
+					this.mostrarSnackbar("No hay registros para exportar", "warning");
+					return;
+				}
+
+				this.exportando = true;
+
+				try {
+					// Preparar datos para exportación con textos legibles
+					const datosParaExportar = this.visitasFiltradas.map((visita) => ({
+						"Distrito Fiscal": this.getTextoDistrito(visita.distritoFiscal),
+						CID: visita.cid || "",
+						CUISMP: visita.cuismp || "",
+						Anexo: visita.anexo || "",
+						Modelo: this.getTextoModelo(visita.modelo),
+						MAC: visita.mac || "",
+						Serie: visita.serie || "",
+						Ticket: visita.ticket || "",
+						"Fecha Revisión": visita.fechaRevision || "",
+						Tipificación: this.getTextoTipificacion(visita.tipificacion),
+						Responsable: this.getTextoResponsable(visita.responsable),
+						"Nombre Personal": visita.nombrePersonal || "",
+						Sede: visita.sede || "",
+						Cargo: visita.cargo || "",
+						"Estado Inicial": visita.estadoInicial ? "Activo" : "Inactivo",
+						"Estado Final": visita.estadoFinal ? "Activo" : "Inactivo",
+						"Switch Claro": visita.switch ? "Sí" : "No",
+						"Cliente Conflicto": visita.clienteConflicto ? "Sí" : "No",
+						"Detalle Conflicto":
+							typeof visita.detalleClienteConflicto === "string"
+								? visita.detalleClienteConflicto
+								: visita.detalleClienteConflicto
+								? JSON.stringify(visita.detalleClienteConflicto)
+								: "",
+						Observaciones: visita.observaciones || "",
+						"Fecha Creación": this.formatearFechaCompleta(visita.fechaCreacion),
+					}));
+
+					// Crear libro de trabajo
+					const wb = XLSX.utils.book_new();
+					const ws = XLSX.utils.json_to_sheet(datosParaExportar);
+
+					// Ajustar ancho de columnas
+					const colWidths = [
+						{ wch: 15 }, // Distrito Fiscal
+						{ wch: 12 }, // CID
+						{ wch: 8 }, // CUISMP
+						{ wch: 8 }, // Anexo
+						{ wch: 12 }, // Modelo
+						{ wch: 15 }, // MAC
+						{ wch: 15 }, // Serie
+						{ wch: 12 }, // Ticket
+						{ wch: 12 }, // Fecha Revisión
+						{ wch: 20 }, // Tipificación
+						{ wch: 15 }, // Responsable
+						{ wch: 20 }, // Nombre Personal
+						{ wch: 20 }, // Sede
+						{ wch: 15 }, // Cargo
+						{ wch: 12 }, // Estado Inicial
+						{ wch: 12 }, // Estado Final
+						{ wch: 10 }, // Switch Claro
+						{ wch: 12 }, // Cliente Conflicto
+						{ wch: 30 }, // Detalle Conflicto
+						{ wch: 30 }, // Observaciones
+						{ wch: 18 }, // Fecha Creación
+					];
+					ws["!cols"] = colWidths;
+
+					// Agregar hoja al libro
+					XLSX.utils.book_append_sheet(wb, ws, "Registro de Visitas");
+
+					// Generar nombre de archivo con fecha actual
+					const fechaActual = new Date()
+						.toLocaleDateString("es-CL")
+						.replace(/\//g, "-");
+					const nombreArchivo = `registro-visitas-${fechaActual}.xlsx`;
+
+					// Descargar archivo
+					XLSX.writeFile(wb, nombreArchivo);
+
+					this.mostrarSnackbar(
+						`✅ Archivo exportado: ${nombreArchivo} (${datosParaExportar.length} registros)`,
+						"success"
+					);
+				} catch (error) {
+					console.error("Error exportando a Excel:", error);
+					this.mostrarSnackbar(
+						"❌ Error al exportar el archivo Excel",
+						"error"
+					);
+				} finally {
+					this.exportando = false;
+				}
+			},
+
+			// Función auxiliar para formatear fecha completa
+			formatearFechaCompleta(fecha) {
+				if (!fecha) return "";
+
+				let fechaObj;
+				if (fecha.toDate && typeof fecha.toDate === "function") {
+					// Timestamp de Firebase
+					fechaObj = fecha.toDate();
+				} else if (fecha instanceof Date) {
+					fechaObj = fecha;
+				} else {
+					fechaObj = new Date(fecha);
+				}
+
+				return fechaObj.toLocaleString("es-CL", {
+					year: "numeric",
+					month: "2-digit",
+					day: "2-digit",
+					hour: "2-digit",
+					minute: "2-digit",
+				});
+			},
 		},
 	};
 </script>
@@ -1153,5 +1461,26 @@
 
 	.v-chip {
 		font-weight: 500;
+	}
+
+	.gap-2 {
+		gap: 8px;
+	}
+
+	.export-btn:not(.v-btn--disabled) {
+		background-color: #217346 !important;
+		border-color: #217346 !important;
+	}
+
+	.export-btn:not(.v-btn--disabled):hover {
+		background-color: #1a5c37 !important;
+		border-color: #1a5c37 !important;
+	}
+
+	.filtros-section {
+		margin-top: 16px;
+		margin-bottom: 24px;
+		padding-top: 8px;
+		padding-bottom: 8px;
 	}
 </style>
