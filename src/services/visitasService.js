@@ -17,8 +17,6 @@ import {
 // Configuración de colección según ambiente
 const COLLECTION_NAME = Environment.getCollectionName('visitas');
 
-// Log de información del ambiente
-Environment.logEnvironmentInfo(COLLECTION_NAME);
 
 export class VisitasService {
   
