@@ -15,10 +15,4 @@ export const Environment = {
     return this.isProduction() ? baseName : `dev_${baseName}`;
   },
 
-  // Log de información del ambiente
-  logEnvironmentInfo(collectionName) {
-    console.log('Ambiente:', this.getCurrentEnvironment());
-    console.log('Hostname:', window.location.hostname);
-    console.log('Colección Firebase:', collectionName);
-  }
 };
