@@ -1,4 +1,5 @@
 import { db, auth } from '../utils/firebase';
+import { Environment } from '../config/environment';
 import { 
   collection, 
   addDoc, 
@@ -13,7 +14,11 @@ import {
   serverTimestamp 
 } from 'firebase/firestore';
 
-const COLLECTION_NAME = 'visitas';
+// Configuración de colección según ambiente
+const COLLECTION_NAME = Environment.getCollectionName('visitas');
+
+// Log de información del ambiente
+Environment.logEnvironmentInfo(COLLECTION_NAME);
 
 export class VisitasService {
   
