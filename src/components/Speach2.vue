@@ -51,7 +51,8 @@
 </template>
 
 <script>
-	import FormDataPanel from "./FormDataPanel.vue";
+import FormDataPanel from "./FormDataPanel.vue";
+import { formatDateLocal } from '@/utils/dateUtils';
 
 	export default {
 		name: "Speach2",
@@ -65,22 +66,12 @@
 			},
 		},
 		computed: {
-			fechaInicioFormateada() {
-				if (!this.formData.fechaInicio) return "";
-				const fecha = new Date(this.formData.fechaInicio);
-				const dia = fecha.getDate().toString().padStart(2, "0");
-				const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
-				const año = fecha.getFullYear().toString();
-				return `${dia}/${mes}/${año}`;
-			},
-			fechaFinFormateada() {
-				if (!this.formData.fechaFin) return "";
-				const fecha = new Date(this.formData.fechaFin);
-				const dia = fecha.getDate().toString().padStart(2, "0");
-				const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
-				const año = fecha.getFullYear().toString();
-				return `${dia}/${mes}/${año}`;
-			},
+		fechaInicioFormateada() {
+			return formatDateLocal(this.formData.fechaInicio);
+		},
+		fechaFinFormateada() {
+			return formatDateLocal(this.formData.fechaFin);
+		},
 
 			comunicacionTexto() {
 				if (this.formData.comunicacionCliente === "si") {
