@@ -120,14 +120,14 @@ export default {
 		showNombre() {
 			return this.showPersonalFields && this.formData.nombre;
 		},
-		
-		fechaInicioFormateada() {
-			return formatDateLocal(this.formData.fechaInicio);
-		},
-		
-		fechaFinFormateada() {
-			return formatDateLocal(this.formData.fechaFin);
-		},
+	
+	fechaInicioFormateada() {
+		return formatDateLocal(this.formData.fechaInicio);
+	},
+	
+	fechaFinFormateada() {
+		return formatDateLocal(this.formData.fechaFin);
+	},
 		
 		nombreFormateado() {
 			if (!this.formData.nombre) return "";

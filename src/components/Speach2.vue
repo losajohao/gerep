@@ -65,13 +65,13 @@ import { formatDateLocal } from '@/utils/dateUtils';
 				required: true,
 			},
 		},
-		computed: {
-		fechaInicioFormateada() {
-			return formatDateLocal(this.formData.fechaInicio);
-		},
-		fechaFinFormateada() {
-			return formatDateLocal(this.formData.fechaFin);
-		},
+	computed: {
+	fechaInicioFormateada() {
+		return formatDateLocal(this.formData.fechaInicio);
+	},
+	fechaFinFormateada() {
+		return formatDateLocal(this.formData.fechaFin);
+	},
 
 			comunicacionTexto() {
 				if (this.formData.comunicacionCliente === "si") {

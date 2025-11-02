@@ -231,11 +231,12 @@
 	import Speach7 from "../components/Speach7.vue";
 	import Speach8 from "../components/Speach8.vue";
 	import Speach9 from "../components/Speach9.vue";
+	import Speach10 from "../components/Speach10.vue";
 	import Form1 from "../components/Form1.vue";
 	import { useAuth } from '../composables/useAuth';
 
 	export default {
-		components: { Speach1, Speach2, Speach3, Speach4, Speach5, Speach6, Speach7, Speach8, Speach9, Form1 },
+		components: { Speach1, Speach2, Speach3, Speach4, Speach5, Speach6, Speach7, Speach8, Speach9, Speach10, Form1 },
 		data() {
 			return {
 				// Ya no necesitamos el composable en data, trabajamos directamente con el store

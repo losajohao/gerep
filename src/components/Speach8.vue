@@ -67,14 +67,14 @@
 				required: true,
 			},
 		},
-		computed: {
-		fechaInicioFormateada() {
-			return formatDateLocal(this.formData.fechaInicio);
-		},
-		fechaFinFormateada() {
-			return formatDateLocal(this.formData.fechaFin);
-		},
-			nombreFormateado() {
+	computed: {
+	fechaInicioFormateada() {
+		return formatDateLocal(this.formData.fechaInicio);
+	},
+	fechaFinFormateada() {
+		return formatDateLocal(this.formData.fechaFin);
+	},
+		nombreFormateado() {
 				if (!this.formData.nombre) return "";
 				return this.formData.nombre
 					.split(" ")

@@ -376,9 +376,12 @@
 				return this.ticket === "1" && this.tipo === "5";
 			},
 
-			// Computed para determinar si mostrar los campos de causa del problema (ticket 1 tipo 6)
+			// Computed para determinar si mostrar los campos de causa del problema (ticket 1 tipo 6 y ticket 2 tipo 6)
 			mostrarCamposCausaProblema() {
-				return this.ticket === "1" && this.tipo === "6";
+				return (
+					(this.ticket === "1" && this.tipo === "6") ||
+					(this.ticket === "2" && this.tipo === "6")
+				);
 			},
 
 			// Computed properties para los nuevos campos

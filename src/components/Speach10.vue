@@ -4,16 +4,17 @@
 			<v-col cols="4">
 				<FormDataPanel
 					:formData="formData"
-					:showPersonalFields="true"
+					:showPersonalFields="false"
 				/>
 			</v-col>
 			<v-col cols="8">
 				<div class="pdf-container">
-					<p><strong>RESPONSABILIDAD: </strong>TERCEROS</p>
+					<p><strong>TIPO DE INC: </strong>PROACTIVO</p>
 					<p>
-						<strong>TIPIFICACION: </strong>CORTE DE FIBRA OPTICA / COBRE DE
+						<strong>TIPIFICACIÓN: </strong>CORTE DE FIBRA OPTICA / COBRE DE
 						ULTIMA MILLA - CASO FORTUITO
 					</p>
+					<p><strong>RESPONSABILIDAD: </strong>TERCEROS</p>
 					<p><strong>DETERMINACIÓN DE LA CAUSA:</strong></p>
 					<P>
 						Se identificó un corte en el cable de fibra óptica que afectó a un
@@ -23,14 +24,13 @@
 					</P>
 					<P><strong>MEDIDAS CORRECTIVAS Y/O PREVENTIVAS TOMADAS</strong></P>
 					<p>
-						El cliente, {{ formData.pronombre }} {{ nombreFormateado }}, reportó
-						problemas con su servicio de datos identificado con el CUISMP
-						{{ formData.cuismp }}, y se generó un ticket el día
-						{{ fechaInicioFormateada }} a las
-						{{ formData.horaInicio }}
-						horas. Inmediatamente, Claro revisó el enlace, encontrando un
-						problema entre el local del cliente y el punto de presencia de
-						Claro. {{ desplazamientoTexto
+						A través de los Sistemas de Monitoreo de Claro, de manera proactiva
+						se identificó la pérdida de gestión del servicio de datos
+						identificado con el CUISMP {{ formData.cuismp }}, y se generó un
+						ticket el día {{ fechaInicioFormateada }} a las
+						{{ formData.horaInicio }} horas. Inmediatamente, Claro revisó el
+						enlace, encontrando un problema entre el local del cliente y el
+						punto de presencia de Claro. {{ desplazamientoTexto
 						}}<span v-if="formData.distanciaCorte">
 							a {{ formData.distanciaCorte }}Km.</span
 						>
@@ -63,7 +63,7 @@
 	import { formatDateLocal } from '@/utils/dateUtils';
 
 	export default {
-		name: "Speach9",
+		name: "Speach10",
 		components: {
 			FormDataPanel,
 		},
@@ -73,20 +73,13 @@
 				required: true,
 			},
 		},
-	computed: {
-	fechaInicioFormateada() {
-		return formatDateLocal(this.formData.fechaInicio);
-	},
-	fechaFinFormateada() {
-		return formatDateLocal(this.formData.fechaFin);
-	},
-		nombreFormateado() {
-				if (!this.formData.nombre) return "";
-				return this.formData.nombre
-					.split(" ")
-					.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-					.join(" ");
-			},
+		computed: {
+		fechaInicioFormateada() {
+			return formatDateLocal(this.formData.fechaInicio);
+		},
+		fechaFinFormateada() {
+			return formatDateLocal(this.formData.fechaFin);
+		},
 			causaProblemaTexto() {
 				if (!this.formData.causaProblema) return "terceros";
 
@@ -150,3 +143,4 @@
 		color: #444;
 	}
 </style>
+
