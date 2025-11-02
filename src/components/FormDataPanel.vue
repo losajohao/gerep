@@ -95,6 +95,8 @@
 </template>
 
 <script>
+import { formatDateLocal } from '@/utils/dateUtils';
+
 export default {
 	name: "FormDataPanel",
 	props: {
@@ -120,21 +122,11 @@ export default {
 		},
 		
 		fechaInicioFormateada() {
-			if (!this.formData.fechaInicio) return "";
-			const fecha = new Date(this.formData.fechaInicio);
-			const dia = fecha.getDate().toString().padStart(2, "0");
-			const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
-			const año = fecha.getFullYear().toString();
-			return `${dia}/${mes}/${año}`;
+			return formatDateLocal(this.formData.fechaInicio);
 		},
 		
 		fechaFinFormateada() {
-			if (!this.formData.fechaFin) return "";
-			const fecha = new Date(this.formData.fechaFin);
-			const dia = fecha.getDate().toString().padStart(2, "0");
-			const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
-			const año = fecha.getFullYear().toString();
-			return `${dia}/${mes}/${año}`;
+			return formatDateLocal(this.formData.fechaFin);
 		},
 		
 		nombreFormateado() {
