@@ -63,14 +63,14 @@ export default {
 			required: true
 		}
 	},
-	computed: {
+computed: {
 	fechaInicioFormateada() {
 		return formatDateLocal(this.formData.fechaInicio);
 	},
 	fechaFinFormateada() {
 		return formatDateLocal(this.formData.fechaFin);
 	},
-		problemaEncontradoTexto() {
+	problemaEncontradoTexto() {
 			if (this.formData.problemaEncontrado === 'otro' && this.formData.otroProblemaEncontrado) {
 				return this.formData.otroProblemaEncontrado;
 			}

@@ -64,14 +64,14 @@ export default {
 			required: true
 		}
 	},
-	computed: {
+computed: {
 	fechaInicioFormateada() {
 		return formatDateLocal(this.formData.fechaInicio);
 	},
 	fechaFinFormateada() {
 		return formatDateLocal(this.formData.fechaFin);
 	},
-		nombreFormateado() {
+	nombreFormateado() {
 			if (!this.formData.nombre) return "";
 			return this.formData.nombre
 				.split(" ")

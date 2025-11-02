@@ -53,7 +53,7 @@ export default {
 				estado: true,
 			},
 			{
-				label: "CORTE DE FIBRA OPTICA TRONCAL DE RED - CASO FORTUITO",
+				label: "CORTE DE FIBRA OPTICA / COBRE DE ULTIMA MILLA - CASO FORTUITO",
 				value: "6",
 				estado: true,
 			},
@@ -64,7 +64,7 @@ export default {
 				estado: false,
 			},
 			{
-				label: "CORTE DE FIBRA OPTICA / COBRE DE ULTIMA MILLA - CASO FORTUITO",
+				label: "CORTE DE FIBRA OPTICA TRONCAL DE RED - CASO FORTUITO",
 				value: "9",
 				estado: false,
 			},
@@ -112,14 +112,15 @@ export default {
 
 			const combinacionesValidas = [
 				{ ticket: "1", tipo: "1" }, // Speach1
-				{ ticket: "1", tipo: "2" }, // Speach4
-				{ ticket: "1", tipo: "3" }, // Speach5
 				{ ticket: "2", tipo: "1" }, // Speach2
 				{ ticket: "2", tipo: "2" }, // Speach3
+				{ ticket: "1", tipo: "2" }, // Speach4
+				{ ticket: "1", tipo: "3" }, // Speach5
 				{ ticket: "1", tipo: "4" }, // Speach6
 				{ ticket: "2", tipo: "5" }, // Speach7
 				{ ticket: "1", tipo: "5" }, // Speach8
 				{ ticket: "1", tipo: "6" }, // Speach9
+				{ ticket: "2", tipo: "6" }, // Speach10
 			];
 
 			return combinacionesValidas.some(
@@ -147,6 +148,8 @@ export default {
 				return "Speach8";
 			if (state.formData.ticket === "1" && state.formData.tipo === "6")
 				return "Speach9";
+			if (state.formData.ticket === "2" && state.formData.tipo === "6")
+				return "Speach10";
 			return null;
 		},
 
@@ -191,24 +194,28 @@ export default {
 			state.formData = { ...state.formData, ...data };
 		},
 
-		RESET_FORM_DATA(state) {
-			state.formData = {
-				ticket: null,
-				tipo: null,
-				cuismp: null,
-				fechaInicio: null,
-				horaInicio: null,
-				fechaFin: null,
-				horaFin: null,
-				desplazamiento: null,
-				pronombre: null,
-				nombre: null,
-				comunicacionCliente: null,
-				problemaEncontrado: null,
-				otroProblemaEncontrado: null,
-				correctivo: null,
-			};
-		},
+	RESET_FORM_DATA(state) {
+		state.formData = {
+			ticket: null,
+			tipo: null,
+			cuismp: null,
+			fechaInicio: null,
+			horaInicio: null,
+			fechaFin: null,
+			horaFin: null,
+			desplazamiento: null,
+			pronombre: null,
+			nombre: null,
+			comunicacionCliente: null,
+			problemaEncontrado: null,
+			otroProblemaEncontrado: null,
+			correctivo: null,
+			tipoDesplazamiento: null,
+			causaProblema: null,
+			otraCausaProblema: null,
+			distanciaCorte: null,
+		};
+	},
 
 		SET_VALIDATION_ERROR(state, { field, error }) {
 			state.validationErrors = { ...state.validationErrors, [field]: error };
@@ -218,26 +225,30 @@ export default {
 			state.validationErrors = {};
 		},
 
-		RESET_STEPPER(state) {
-			state.currentStep = 1;
-			state.formData = {
-				ticket: null,
-				tipo: null,
-				cuismp: null,
-				fechaInicio: null,
-				horaInicio: null,
-				fechaFin: null,
-				horaFin: null,
-				desplazamiento: null,
-				pronombre: null,
-				nombre: null,
-				comunicacionCliente: null,
-				problemaEncontrado: null,
-				otroProblemaEncontrado: null,
-				correctivo: null,
-			};
-			state.validationErrors = {};
-		},
+	RESET_STEPPER(state) {
+		state.currentStep = 1;
+		state.formData = {
+			ticket: null,
+			tipo: null,
+			cuismp: null,
+			fechaInicio: null,
+			horaInicio: null,
+			fechaFin: null,
+			horaFin: null,
+			desplazamiento: null,
+			pronombre: null,
+			nombre: null,
+			comunicacionCliente: null,
+			problemaEncontrado: null,
+			otroProblemaEncontrado: null,
+			correctivo: null,
+			tipoDesplazamiento: null,
+			causaProblema: null,
+			otraCausaProblema: null,
+			distanciaCorte: null,
+		};
+		state.validationErrors = {};
+	},
 	},
 
 	actions: {
